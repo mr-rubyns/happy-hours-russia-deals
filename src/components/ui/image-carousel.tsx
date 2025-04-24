@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -52,6 +53,7 @@ export function ImageCarousel({
 
   const goToPrevious = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    e?.preventDefault();
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
@@ -59,17 +61,22 @@ export function ImageCarousel({
 
   const goToNext = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    e?.preventDefault();
     const isLastSlide = currentIndex === images.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
 
-  const goToSlide = (slideIndex: number) => {
+  const goToSlide = (slideIndex: number, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    e?.preventDefault();
     setCurrentIndex(slideIndex);
   };
 
-  const openModal = () => {
-    if (enableModal) {
+  const openModal = (e?: React.MouseEvent) => {
+    if (enableModal && e) {
+      e.stopPropagation();
+      e.preventDefault();
       setIsModalOpen(true);
     }
   };
@@ -93,14 +100,25 @@ export function ImageCarousel({
     })));
   }, [currentIndex, placeholders]);
 
+  // Handle carousel interaction without navigation
+  const handleCarouselClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (enableModal) {
+      openModal(e);
+    }
+  };
+
   return (
-    <div className={cn("relative group", className, fullWidth ? "w-full" : "")}>
+    <div 
+      className={cn("relative group", className, fullWidth ? "w-full" : "")}
+      onClick={handleCarouselClick}
+    >
       <div
         className={cn(
           "overflow-hidden rounded-md",
           aspectRatioClass[aspectRatio]
         )}
-        onClick={openModal}
       >
         <div className={cn(
           "w-full h-full flex items-center justify-center transition-all duration-300",
@@ -138,11 +156,11 @@ export function ImageCarousel({
       )}
 
       {images.length > 1 && (
-        <div className="flex justify-center gap-1 mt-2">
+        <div className="flex justify-center gap-1 mt-2" onClick={(e) => e.preventDefault()}>
           {images.map((_, slideIndex) => (
             <div
               key={slideIndex}
-              onClick={() => goToSlide(slideIndex)}
+              onClick={(e) => goToSlide(slideIndex, e)}
               className={cn(
                 "h-1.5 rounded-full cursor-pointer transition-all",
                 slideIndex === currentIndex

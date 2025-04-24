@@ -26,7 +26,7 @@ export function DealCard({ deal, className, favoriteMode = false }: DealCardProp
   return (
     <Link to={`/deal/${deal.slug}`}>
       <Card className={cn("h-full overflow-hidden transition-shadow hover:shadow-md", className)}>
-        <div className="relative">
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
           <ImageCarousel 
             images={deal.images}
             aspectRatio="video" 
