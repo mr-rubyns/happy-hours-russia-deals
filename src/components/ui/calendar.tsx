@@ -2,7 +2,7 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { ru } from "date-fns/locale"; // Import Russian locale directly from date-fns
+import { ru } from "date-fns/locale/ru"; // Import the Russian locale correctly
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
