@@ -1,7 +1,10 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
-  Search
+  Search,
+  Globe,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +74,7 @@ export function Navbar({
               return (
                 <button
                   key={category.id}
-                  onClick={() => handleMainCategoryChange(category.id)}
+                  onClick={() => onMainCategoryChange && onMainCategoryChange(category.id)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
                     selectedMainCategory === category.id
                       ? "text-orange-600"
@@ -117,7 +120,7 @@ export function Navbar({
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
             <button
-              onClick={() => handleSubCategoryChange("")}
+              onClick={() => onSubCategoryChange && onSubCategoryChange("")}
               className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                 !selectedSubCategory
                   ? "text-orange-500"
@@ -137,7 +140,7 @@ export function Navbar({
               return (
                 <button
                   key={category.id}
-                  onClick={() => handleSubCategoryChange(category.id)}
+                  onClick={() => onSubCategoryChange && onSubCategoryChange(category.id)}
                   className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                     selectedSubCategory === category.id
                       ? "text-orange-500"
