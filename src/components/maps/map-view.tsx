@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -139,9 +140,9 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
               >
                 <Popup className="w-[280px]">
                   <div className="rounded-lg overflow-hidden">
-                    <div className="relative h-[140px] w-full flex items-center justify-center bg-[#F2FCE2]">
+                    <div className="relative h-[140px] w-full flex items-center justify-center bg-[#FDE1D3]">
                       <img 
-                        src="/lovable-uploads/9039bea5-3bc5-43e1-a2d5-8432d9ed47f6.png" 
+                        src="/lovable-uploads/06526ad7-00f1-43f6-8bca-129cb41ea734.png" 
                         alt={deal.title} 
                         className="max-w-[80%] max-h-[80%] object-contain"
                       />
