@@ -22,7 +22,7 @@ export function DealCard({ deal, className, favoriteMode = false }: DealCardProp
     setIsFavorite(!isFavorite);
   };
 
-  const formattedRating = deal.rating.toFixed(2);
+  const formattedRating = deal.rating.toFixed(1);
 
   return (
     <Link to={`/deal/${deal.slug}`}>
