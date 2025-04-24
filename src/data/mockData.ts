@@ -14,6 +14,7 @@ export const categories = [
 ];
 
 const generateDealImages = (id: number) => {
+  // Исправляем пути к изображениям, добавляя правильный префикс
   const images = [
     '/deal-images/deal1.jpg',
     '/deal-images/deal2.jpg',
