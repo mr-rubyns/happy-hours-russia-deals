@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserRound, Search, X, ArrowLeft, ArrowRight, Filter, Map as MapIcon } from "lucide-react";
+import { UserRound, Search, X, ArrowLeft, ArrowRight, Filter, Map as MapIcon, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -222,6 +223,12 @@ export function Navbar({
                 <DropdownMenuItem asChild>
                   <Link to="/seller" className="w-full">
                     Кабинет продавца
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/admin" className="w-full flex items-center">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    Администрирование
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
