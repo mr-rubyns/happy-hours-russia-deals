@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -107,8 +106,8 @@ export function ImageCarousel({
           "w-full h-full flex items-center justify-center transition-all duration-300",
           placeholders[currentIndex].color
         )}>
-          <React.Suspense fallback={<div className="w-24 h-24" />}>
-            <IconComponent className="w-24 h-24 text-gray-600" />
+          <React.Suspense fallback={<div className="w-12 h-12" />}>
+            <IconComponent className="w-12 h-12 text-gray-600" />
           </React.Suspense>
         </div>
       </div>
@@ -171,8 +170,8 @@ export function ImageCarousel({
               "w-[80vw] h-[80vh] flex items-center justify-center",
               placeholders[currentIndex].color
             )}>
-              <React.Suspense fallback={<div className="w-96 h-96" />}>
-                <IconComponent className="w-96 h-96 text-gray-600" />
+              <React.Suspense fallback={<div className="w-48 h-48" />}>
+                <IconComponent className="w-48 h-48 text-gray-600" />
               </React.Suspense>
             </div>
             {images.length > 1 && (
