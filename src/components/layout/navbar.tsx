@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -109,6 +110,11 @@ export function Navbar({
           toast({
             title: "Подкатегория изменена",
             description: `Выбрана подкатегория: ${subCategoryName}`,
+          });
+        } else {
+          toast({
+            title: "Подкатегория изменена",
+            description: "Показаны все категории",
           });
         }
       }
