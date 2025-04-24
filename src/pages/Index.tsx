@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/navbar';
@@ -5,56 +6,33 @@ import { Footer } from '@/components/layout/footer';
 import { DealGrid } from '@/components/deals/deal-grid';
 import { Card, CardContent } from '@/components/ui/card';
 import { mockDeals, categories } from '@/data/mockData';
-import { 
-  Gift,
-  Home,
-  Star,
-  Leaf,
-  Palette,
-  Utensils,
-  Mountain,
-  Camera,
-  GraduationCap,
-  Wine,
-  Heart,
-  MapPin,
-  Ticket,
-  ShoppingCart,
-  Dumbbell,
-  Car,
-  Hotel,
-  Home as House,
-  Bed,
-  Compass,
-  Trophy
-} from 'lucide-react';
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
-    "Gift": () => <Gift className="h-5 w-5 text-orange-500" />,
-    "Home": () => <Home className="h-5 w-5 text-blue-500" />,
-    "Star": () => <Star className="h-5 w-5 text-yellow-500" />,
-    "Leaf": () => <Leaf className="h-5 w-5 text-green-500" />,
-    "Palette": () => <Palette className="h-5 w-5 text-purple-500" />,
-    "Utensils": () => <Utensils className="h-5 w-5 text-red-500" />,
-    "Mountain": () => <Mountain className="h-5 w-5 text-gray-500" />,
-    "Camera": () => <Camera className="h-5 w-5 text-indigo-500" />,
-    "GraduationCap": () => <GraduationCap className="h-5 w-5 text-teal-500" />,
-    "Wine": () => <Wine className="h-5 w-5 text-pink-500" />,
-    "Heart": () => <Heart className="h-5 w-5 text-red-500" />,
-    "MapPin": () => <MapPin className="h-5 w-5 text-orange-500" />,
-    "Ticket": () => <Ticket className="h-5 w-5 text-green-500" />,
-    "ShoppingBag": () => <ShoppingCart className="h-5 w-5 text-blue-500" />,
-    "Dumbbell": () => <Dumbbell className="h-5 w-5 text-gray-500" />,
-    "Car": () => <Car className="h-5 w-5 text-red-500" />,
-    "Hotel": () => <Hotel className="h-5 w-5 text-indigo-500" />,
-    "House": () => <House className="h-5 w-5 text-green-500" />,
-    "Bed": () => <Bed className="h-5 w-5 text-purple-500" />,
-    "Compass": () => <Compass className="h-5 w-5 text-teal-500" />,
-    "Trophy": () => <Trophy className="h-5 w-5 text-yellow-500" />,
+    "Gift": () => <div className="h-5 w-5 bg-orange-200 rounded-full"></div>,
+    "Home": () => <div className="h-5 w-5 bg-blue-200 rounded-sm"></div>,
+    "Star": () => <div className="h-5 w-5 bg-yellow-200 rotate-45"></div>,
+    "Leaf": () => <div className="h-5 w-5 bg-green-200 border-l-2 border-b-2 border-green-500"></div>,
+    "Palette": () => <div className="h-5 w-5 bg-purple-200 border-2 border-purple-500"></div>,
+    "Utensils": () => <div className="h-5 w-5 bg-red-200 border-l-2 border-t-2 border-red-500"></div>,
+    "Mountain": () => <div className="h-5 w-5 bg-gray-200 triangle-down"></div>,
+    "Camera": () => <div className="h-5 w-5 bg-indigo-200 border-2 border-indigo-500 rounded-sm"></div>,
+    "GraduationCap": () => <div className="h-5 w-5 bg-teal-200 border-b-2 border-r-2 border-teal-500"></div>,
+    "Wine": () => <div className="h-5 w-5 bg-pink-200 border-l-2 border-r-2 border-pink-500"></div>,
+    "Heart": () => <div className="h-5 w-5 bg-red-200 transform rotate-45 border-r-2 border-b-2 border-red-500"></div>,
+    "MapPin": () => <div className="h-5 w-5 bg-orange-200 rounded-full border-b-2 border-orange-500"></div>,
+    "Ticket": () => <div className="h-5 w-5 bg-green-200 border-dashed border-2 border-green-500"></div>,
+    "ShoppingBag": () => <div className="h-5 w-5 bg-blue-200 border-2 border-blue-500 rounded-sm"></div>,
+    "Dumbbell": () => <div className="h-5 w-5 bg-gray-200 border-l-2 border-r-2 border-gray-500"></div>,
+    "Car": () => <div className="h-5 w-5 bg-red-200 border-b-2 border-red-500"></div>,
+    "Hotel": () => <div className="h-5 w-5 bg-indigo-200 border-2 border-indigo-500"></div>,
+    "House": () => <div className="h-5 w-5 bg-green-200 border-2 border-green-500 rounded-sm"></div>,
+    "Bed": () => <div className="h-5 w-5 bg-purple-200 border-b-2 border-purple-500"></div>,
+    "Compass": () => <div className="h-5 w-5 bg-teal-200 rounded-full border-2 border-teal-500"></div>,
+    "Trophy": () => <div className="h-5 w-5 bg-yellow-200 border-b-2 border-yellow-500"></div>,
   };
 
-  return iconMap[iconName] || (() => <MapPin className="h-5 w-5 text-gray-500" />);
+  return iconMap[iconName] || (() => <div className="h-5 w-5 bg-gray-200 border-2 border-gray-500"></div>);
 };
 
 const Index = () => {
