@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Search, Menu, User, ShoppingCart, Heart, Filter } from "lucide-react";
+import { Filter, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -89,7 +90,7 @@ export function Navbar() {
           </ul>
         </div>
         
-        {/* Update the filter button to open the dialog */}
+        {/* Filter button */}
         <Button 
           variant="outline" 
           className="flex-1"
@@ -99,7 +100,7 @@ export function Navbar() {
           Фильтры
         </Button>
 
-        {/* Add the FilterDialog component */}
+        {/* FilterDialog component */}
         <FilterDialog 
           open={isFilterOpen} 
           onOpenChange={setIsFilterOpen}
