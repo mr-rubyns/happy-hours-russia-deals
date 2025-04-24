@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/navbar";
@@ -242,7 +241,7 @@ const SellerDashboard = () => {
             onValueChange={setActiveTab}
             className="space-y-4"
           >
-            <TabsList className="w-full justify-start overflow-auto">
+            <TabsList className="w-full justify-start bg-gray-100/80 p-1">
               <TabsTrigger value="deals" className="flex items-center">
                 <Package className="mr-2 h-4 w-4" />
                 Мои акции
@@ -684,7 +683,7 @@ const SellerDashboard = () => {
                   <CardHeader>
                     <CardTitle>Продажи по месяцам</CardTitle>
                     <CardDescription>
-                      Сравнение продаж за последние 6 месяцев
+                      Сравнение продаж за последние 6 мес��цев
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="h-80 flex items-center justify-center">
