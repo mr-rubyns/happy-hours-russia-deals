@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -8,6 +7,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { mainCategories, categories, mockDeals } from "@/data/mockData";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -134,29 +139,45 @@ export function Navbar({
             })}
           </nav>
 
-          <div className="flex items-center gap-6">
-            <nav className="hidden md:flex items-center gap-4">
-              <Link to="/login" className="text-gray-600 hover:text-orange-500">
-                Вход
-              </Link>
-              <Link to="/register" className="text-gray-600 hover:text-orange-500">
-                Регистрация
-              </Link>
-              <Link to="/map-search" className="text-gray-600 hover:text-orange-500">
-                Карта
-              </Link>
-            </nav>
-            
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200"
-              asChild
-            >
-              <Link to="/profile">
-                <UserRound className="h-6 w-6" />
-              </Link>
-            </Button>
+          <div className="flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200"
+                >
+                  <UserRound className="h-6 w-6" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to="/login" className="w-full">
+                    Вход
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/register" className="w-full">
+                    Регистрация
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="w-full">
+                    Личный кабинет
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/seller" className="w-full">
+                    Кабинет продавца
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/map-search" className="w-full">
+                    Поиск по карте
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -277,4 +298,3 @@ export function Navbar({
     </header>
   );
 }
-
