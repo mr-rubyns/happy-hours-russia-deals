@@ -6,11 +6,8 @@ import { Footer } from '@/components/layout/footer';
 import { DealGrid } from '@/components/deals/deal-grid';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import { mockDeals, categories } from '@/data/mockData';
-import { FilterOptions } from '@/types';
 
-// Import the getIconComponent utility from navbar for consistency
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
     "Gift": () => <div className="h-5 w-5 flex items-center justify-center">🎁</div>,
@@ -43,9 +40,7 @@ const Index = () => {
   const [selectedMainCategory, setSelectedMainCategory] = useState("coupons");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [filteredDeals, setFilteredDeals] = useState(mockDeals);
-  const [showBanner, setShowBanner] = useState(true);
 
-  // Filter deals when main category or subcategory changes
   useEffect(() => {
     let filtered = mockDeals.filter(deal => deal.mainCategory === selectedMainCategory);
     
@@ -53,57 +48,24 @@ const Index = () => {
       filtered = filtered.filter(deal => deal.subcategory === selectedSubCategory);
     }
     
-    // Sort by popularity
     filtered.sort((a, b) => b.soldCount - a.soldCount);
     
     setFilteredDeals(filtered);
-    
-    // Hide banner when a subcategory is selected
-    setShowBanner(!selectedSubCategory);
   }, [selectedMainCategory, selectedSubCategory]);
 
-  // Handle main category change
   const handleMainCategoryChange = (categoryId: string) => {
     setSelectedMainCategory(categoryId);
-    setSelectedSubCategory(""); // Reset subcategory when main category changes
+    setSelectedSubCategory("");
   };
 
-  // Handle subcategory change - Important: This now stays on the current page and just filters
   const handleSubCategoryChange = (categoryId: string) => {
     setSelectedSubCategory(categoryId);
-    // No navigation - just filter in-place
   };
 
-  const promotions = [
-    {
-      id: 'promo-1',
-      title: 'Скидки до 70% на все СПА процедуры',
-      description: 'Специальное предложение только в этом месяце - успей забронировать!',
-      image: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?q=80&w=1740&auto=format&fit=crop',
-      color: 'orange',
-    },
-    {
-      id: 'promo-2',
-      title: 'Семейные развлечения по выгодным ценам',
-      description: 'Проведите время с семьей и сэкономьте до 50%',
-      image: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=1738&auto=format&fit=crop',
-      color: 'blue',
-    },
-    {
-      id: 'promo-3',
-      title: 'Рестораны и кафе: второе блюдо в подарок',
-      description: 'Попробуйте лучшие рестораны города с эксклюзивными предложениями',
-      image: 'https://images.unsplash.com/photo-1592861956120-e524fc739696?q=80&w=1740&auto=format&fit=crop',
-      color: 'green',
-    },
-  ];
-
-  // Get subcategories for the selected main category
   const currentSubcategories = categories.filter(
     cat => cat.mainCategoryId === selectedMainCategory
   );
 
-  // Get category name based on its ID
   const getSubCategoryName = (id: string) => {
     const category = categories.find(cat => cat.id === id);
     return category ? category.name : "";
@@ -118,8 +80,7 @@ const Index = () => {
         selectedSubCategory={selectedSubCategory}
       />
       
-      <main className="flex-grow pt-48">
-        {/* Special Offers */}
+      <main className="flex-grow pt-4">
         <section className="py-8 md:py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex justify-between items-center mb-6">
@@ -140,7 +101,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Featured Categories */}
         <section className="bg-gray-50 py-8 md:py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6">Категории</h2>
@@ -173,33 +133,6 @@ const Index = () => {
                     <h3 className="font-medium">Все категории</h3>
                   </CardContent>
                 </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Download App Banner */}
-        <section className="bg-orange-600 text-white py-8 md:py-12">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="md:w-1/2 mb-6 md:mb-0">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">Скачайте наше приложение</h2>
-                <p className="text-white/90 mb-4">Получите дополнительные скидки и эксклюзивные предложения, доступные только в мобильном приложении.</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="secondary" size="lg">
-                    App Store
-                  </Button>
-                  <Button variant="secondary" size="lg">
-                    Google Play
-                  </Button>
-                </div>
-              </div>
-              <div className="md:w-1/3">
-                <img 
-                  src="https://via.placeholder.com/300x600" 
-                  alt="Mobile App" 
-                  className="max-h-80 mx-auto" 
-                />
               </div>
             </div>
           </div>

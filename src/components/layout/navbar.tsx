@@ -1,22 +1,12 @@
-
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { 
   Search,
-  MapPin, 
+  Globe, 
   User,
-  Globe,
+  MapPin, 
   Calendar,
-  Users,
-  Compass,
-  Trophy,
-  Dumbbell,
-  Car,
-  Hotel,
-  House,
-  Bed,
-  ShoppingBag,
-  Wine
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,7 +77,7 @@ export function Navbar({
   );
 
   return (
-    <header className="fixed top-0 z-40 w-full bg-white border-b">
+    <header className="w-full bg-white border-b">
       <div className="container px-4 mx-auto">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex-shrink-0">
