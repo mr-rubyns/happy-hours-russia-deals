@@ -74,3 +74,16 @@ export interface Category {
   name: string;
   icon: string;
 }
+
+export interface MainCategory {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+export interface SubCategory {
+  id: string;
+  name: string;
+  icon: string;
+  mainCategoryId: string;
+}

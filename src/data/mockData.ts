@@ -1,7 +1,9 @@
-
-import { Deal, User, Review, Message, Category } from "@/types";
+import { Deal, User, Review, Message, Category, MainCategory, SubCategory } from "@/types";
 import { 
-  Sparkles, 
+  Search,
+  Home,
+  Star,
+  Gift,
   Leaf, 
   Palette, 
   Utensils, 
@@ -11,16 +13,25 @@ import {
   Wine 
 } from "lucide-react";
 
-// Define categories
-export const categories = [
-  { id: "entertainment", name: "Развлечения", icon: "Sparkles" },
-  { id: "beauty", name: "Красота и SPA", icon: "Leaf" },
-  { id: "masterclass", name: "Мастер-классы", icon: "Palette" },
-  { id: "restaurants", name: "Рестораны", icon: "Utensils" },
-  { id: "excursions", name: "Экскурсии", icon: "Mountain" },
-  { id: "photo", name: "Фото и видео", icon: "Camera" },
-  { id: "education", name: "Обучение", icon: "GraduationCap" },
-  { id: "tasting", name: "Дегустации", icon: "Wine" }
+// Define main categories
+export const mainCategories: MainCategory[] = [
+  { id: "coupons", name: "Купоны", icon: "Gift" },
+  { id: "housing", name: "Жилье", icon: "Home" },
+  { id: "impressions", name: "Впечатления", icon: "Star" },
+];
+
+// Define subcategories
+export const categories: SubCategory[] = [
+  { id: "entertainment", name: "Развлечения", icon: "Star", mainCategoryId: "impressions" },
+  { id: "beauty", name: "Красота и SPA", icon: "Leaf", mainCategoryId: "coupons" },
+  { id: "masterclass", name: "Мастер-классы", icon: "Palette", mainCategoryId: "impressions" },
+  { id: "restaurants", name: "Рестораны", icon: "Utensils", mainCategoryId: "coupons" },
+  { id: "excursions", name: "Экскурсии", icon: "Mountain", mainCategoryId: "impressions" },
+  { id: "photo", name: "Фото и видео", icon: "Camera", mainCategoryId: "impressions" },
+  { id: "education", name: "Обучение", icon: "GraduationCap", mainCategoryId: "impressions" },
+  { id: "tasting", name: "Дегустации", icon: "Wine", mainCategoryId: "coupons" },
+  { id: "apartments", name: "Квартиры", icon: "Home", mainCategoryId: "housing" },
+  { id: "houses", name: "Дома", icon: "Home", mainCategoryId: "housing" },
 ];
 
 const generateDealImages = (id: number) => {
