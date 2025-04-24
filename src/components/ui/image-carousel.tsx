@@ -4,6 +4,25 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
+// List of available icons from lucide-react
+const icons = [
+  "Book", "Camera", "Coffee", "Compass", "Gift", "Heart", 
+  "Home", "Image", "Map", "Music", "Package", "Rocket", 
+  "Star", "Sun", "Umbrella", "Zap"
+] as const;
+
+// List of soft colors
+const softColors = [
+  "bg-[#F2FCE2]", // Soft Green
+  "bg-[#FEF7CD]", // Soft Yellow
+  "bg-[#FEC6A1]", // Soft Orange
+  "bg-[#E5DEFF]", // Soft Purple
+  "bg-[#FFDEE2]", // Soft Pink
+  "bg-[#FDE1D3]", // Soft Peach
+  "bg-[#D3E4FD]", // Soft Blue
+  "bg-[#F1F0FB]", // Soft Gray
+];
+
 interface ImageCarouselProps {
   images: string[];
   className?: string;
@@ -23,14 +42,20 @@ export function ImageCarousel({
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imgError, setImgError] = useState(false);
+
+  // Generate random colors and icons for each image slot
+  const [placeholders] = useState(() =>
+    images.map(() => ({
+      color: softColors[Math.floor(Math.random() * softColors.length)],
+      icon: icons[Math.floor(Math.random() * icons.length)]
+    }))
+  );
 
   const goToPrevious = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
-    setImgError(false); // Reset error state when changing image
   };
 
   const goToNext = (e?: React.MouseEvent) => {
@@ -38,12 +63,10 @@ export function ImageCarousel({
     const isLastSlide = currentIndex === images.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-    setImgError(false); // Reset error state when changing image
   };
 
   const goToSlide = (slideIndex: number) => {
     setCurrentIndex(slideIndex);
-    setImgError(false); // Reset error state when changing image
   };
 
   const openModal = () => {
@@ -56,16 +79,20 @@ export function ImageCarousel({
     setIsModalOpen(false);
   };
 
-  const handleImageError = () => {
-    setImgError(true);
-  };
-
   const aspectRatioClass = {
     square: "aspect-square",
     video: "aspect-video",
     wide: "aspect-[16/9]",
     auto: "aspect-auto",
   };
+
+  // Dynamically import the current icon
+  const IconComponent = React.useMemo(() => {
+    const iconName = placeholders[currentIndex].icon;
+    return React.lazy(() => import('lucide-react').then(module => ({ 
+      default: module[iconName] 
+    })));
+  }, [currentIndex, placeholders]);
 
   return (
     <div className={cn("relative group", className, fullWidth ? "w-full" : "")}>
@@ -76,21 +103,14 @@ export function ImageCarousel({
         )}
         onClick={openModal}
       >
-        {imgError ? (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-            <span>Изображение недоступно</span>
-          </div>
-        ) : (
-          <img
-            src={images[currentIndex]}
-            alt={`Slide ${currentIndex + 1}`}
-            className={cn(
-              "object-cover w-full h-full transition-all duration-300",
-              enableModal ? "cursor-pointer" : ""
-            )}
-            onError={handleImageError}
-          />
-        )}
+        <div className={cn(
+          "w-full h-full flex items-center justify-center transition-all duration-300",
+          placeholders[currentIndex].color
+        )}>
+          <React.Suspense fallback={<div className="w-8 h-8" />}>
+            <IconComponent className="w-8 h-8 text-gray-600" />
+          </React.Suspense>
+        </div>
       </div>
 
       {showArrows && images.length > 1 && (
@@ -147,11 +167,14 @@ export function ImageCarousel({
             >
               &times;
             </button>
-            <img
-              src={images[currentIndex]}
-              alt="Enlarged view"
-              className="max-h-[90vh] max-w-full"
-            />
+            <div className={cn(
+              "w-[80vw] h-[80vh] flex items-center justify-center",
+              placeholders[currentIndex].color
+            )}>
+              <React.Suspense fallback={<div className="w-32 h-32" />}>
+                <IconComponent className="w-32 h-32 text-gray-600" />
+              </React.Suspense>
+            </div>
             {images.length > 1 && (
               <>
                 <Button
