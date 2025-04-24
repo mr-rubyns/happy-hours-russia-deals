@@ -9,18 +9,41 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import { mockDeals, categories } from '@/data/mockData';
+import { FilterOptions } from '@/types';
 
 const Index = () => {
-  const [popularDeals, setPopularDeals] = useState(mockDeals);
-  const [trendingDeals, setTrendingDeals] = useState(mockDeals.slice().sort(() => 0.5 - Math.random()));
+  const [selectedMainCategory, setSelectedMainCategory] = useState("coupons");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [filteredDeals, setFilteredDeals] = useState(mockDeals);
+  const [showBanner, setShowBanner] = useState(true);
 
+  // Filter deals when main category or subcategory changes
   useEffect(() => {
-    // Simulate data fetching
-    setTimeout(() => {
-      setPopularDeals(mockDeals.slice().sort((a, b) => b.soldCount - a.soldCount));
-      setTrendingDeals(mockDeals.slice().sort((a, b) => b.reviewCount - a.reviewCount));
-    }, 500);
-  }, []);
+    let filtered = mockDeals.filter(deal => deal.mainCategory === selectedMainCategory);
+    
+    if (selectedSubCategory) {
+      filtered = filtered.filter(deal => deal.subcategory === selectedSubCategory);
+    }
+    
+    // Sort by popularity
+    filtered.sort((a, b) => b.soldCount - a.soldCount);
+    
+    setFilteredDeals(filtered);
+    
+    // Hide banner when a subcategory is selected
+    setShowBanner(!selectedSubCategory);
+  }, [selectedMainCategory, selectedSubCategory]);
+
+  // Handle main category change
+  const handleMainCategoryChange = (categoryId: string) => {
+    setSelectedMainCategory(categoryId);
+    setSelectedSubCategory(""); // Reset subcategory when main category changes
+  };
+
+  // Handle subcategory change
+  const handleSubCategoryChange = (categoryId: string) => {
+    setSelectedSubCategory(categoryId);
+  };
 
   const promotions = [
     {
@@ -46,130 +69,159 @@ const Index = () => {
     },
   ];
 
+  // Get subcategories for the selected main category
+  const currentSubcategories = categories.filter(
+    cat => cat.mainCategoryId === selectedMainCategory
+  );
+
+  // Get category name based on its ID
+  const getSubCategoryName = (id: string) => {
+    const category = categories.find(cat => cat.id === id);
+    return category ? category.name : "";
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar 
+        onMainCategoryChange={handleMainCategoryChange}
+        onSubCategoryChange={handleSubCategoryChange}
+        selectedMainCategory={selectedMainCategory}
+        selectedSubCategory={selectedSubCategory}
+      />
       
       <main className="flex-grow">
-        {/* Hero Banner */}
-        <section className="bg-gray-100 py-8 md:py-12">
-          <div className="container px-4 md:px-6 mx-auto">
-            <Carousel className="w-full">
-              <CarouselContent>
-                {promotions.map((promo) => (
-                  <CarouselItem key={promo.id}>
-                    <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
-                      <img 
-                        src={promo.image}
-                        alt={promo.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col justify-center p-6 md:p-12">
-                        <h2 className="text-xl md:text-3xl font-bold text-white mb-2 md:mb-4">
-                          {promo.title}
-                        </h2>
-                        <p className="text-sm md:text-base text-white/90 mb-4 md:mb-6 max-w-md">
-                          {promo.description}
-                        </p>
-                        <Button className="w-fit" size="lg">
-                          Посмотреть предложения
-                        </Button>
+        {/* Hero Banner - only show if no subcategory is selected */}
+        {showBanner && (
+          <section className="bg-gray-100 py-8 md:py-12">
+            <div className="container px-4 md:px-6 mx-auto">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {promotions.map((promo) => (
+                    <CarouselItem key={promo.id}>
+                      <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
+                        <img 
+                          src={promo.image}
+                          alt={promo.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col justify-center p-6 md:p-12">
+                          <h2 className="text-xl md:text-3xl font-bold text-white mb-2 md:mb-4">
+                            {promo.title}
+                          </h2>
+                          <p className="text-sm md:text-base text-white/90 mb-4 md:mb-6 max-w-md">
+                            {promo.description}
+                          </p>
+                          <Button className="w-fit" size="lg">
+                            Посмотреть предложения
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-4" />
-              <CarouselNext className="right-4" />
-            </Carousel>
-          </div>
-        </section>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
+            </div>
+          </section>
+        )}
+
+        {/* Display category heading when subcategory is selected */}
+        {selectedSubCategory && (
+          <section className="bg-gray-100 py-8">
+            <div className="container px-4 md:px-6 mx-auto">
+              <h1 className="text-3xl font-bold mb-2">{getSubCategoryName(selectedSubCategory)}</h1>
+              <p className="text-gray-600">Найдено {filteredDeals.length} предложений</p>
+            </div>
+          </section>
+        )}
 
         {/* Special Offers */}
         <section className="py-8 md:py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Популярные предложения</h2>
+              <h2 className="text-2xl font-bold">
+                {selectedSubCategory 
+                  ? `${getSubCategoryName(selectedSubCategory)}` 
+                  : "Популярные предложения"}
+              </h2>
               <Link to="/deals" className="text-orange-600 hover:text-orange-700 flex items-center">
                 <span>Смотреть все</span>
                 <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
-            <DealGrid deals={popularDeals.slice(0, 4)} />
+            <DealGrid 
+              deals={filteredDeals.slice(0, 20)} 
+              emptyMessage={`В категории "${getSubCategoryName(selectedSubCategory)}" пока нет предложений`} 
+            />
           </div>
         </section>
         
-        {/* Featured Categories */}
-        <section className="bg-gray-50 py-8 md:py-12">
-          <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Категории</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {categories.slice(0, 6).map((category) => (
-                <Link to={`/category/${category.id}`} key={category.id}>
-                  <Card className="h-full hover:shadow-md transition-shadow">
+        {/* Featured Categories - only show if no subcategory is selected */}
+        {showBanner && (
+          <section className="bg-gray-50 py-8 md:py-12">
+            <div className="container px-4 md:px-6 mx-auto">
+              <h2 className="text-2xl font-bold mb-6">Категории</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {currentSubcategories.map((category) => (
+                  <div 
+                    key={category.id} 
+                    onClick={() => handleSubCategoryChange(category.id)}
+                    className="cursor-pointer"
+                  >
+                    <Card className="h-full hover:shadow-md transition-shadow">
+                      <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
+                          {React.createElement(getIconComponent(category.icon), { className: "text-orange-600 text-xl" })}
+                        </div>
+                        <h3 className="font-medium">{category.name}</h3>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+                <Link to="/categories">
+                  <Card className="h-full hover:shadow-md transition-shadow border-dashed">
                     <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
-                        <span className="text-orange-600 text-xl">{category.name.charAt(0)}</span>
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                        <span className="text-gray-600 text-xl">+</span>
                       </div>
-                      <h3 className="font-medium">{category.name}</h3>
+                      <h3 className="font-medium">Все категории</h3>
                     </CardContent>
                   </Card>
                 </Link>
-              ))}
-              <Link to="/categories">
-                <Card className="h-full hover:shadow-md transition-shadow border-dashed">
-                  <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-gray-600 text-xl">+</span>
-                    </div>
-                    <h3 className="font-medium">Все категории</h3>
-                  </CardContent>
-                </Card>
-              </Link>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
         
-        {/* Trending Deals */}
-        <section className="py-8 md:py-12">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Популярное сейчас</h2>
-              <Link to="/trending" className="text-orange-600 hover:text-orange-700 flex items-center">
-                <span>Смотреть все</span>
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <DealGrid deals={trendingDeals.slice(0, 4)} />
-          </div>
-        </section>
-        
-        {/* Download App Banner */}
-        <section className="bg-orange-600 text-white py-8 md:py-12">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="md:w-1/2 mb-6 md:mb-0">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">Скачайте наше приложение</h2>
-                <p className="text-white/90 mb-4">Получите дополнительные скидки и эксклюзивные предложения, доступные только в мобильном приложении.</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="secondary" size="lg">
-                    App Store
-                  </Button>
-                  <Button variant="secondary" size="lg">
-                    Google Play
-                  </Button>
+        {/* Download App Banner - only show if no subcategory is selected */}
+        {showBanner && (
+          <section className="bg-orange-600 text-white py-8 md:py-12">
+            <div className="container px-4 md:px-6 mx-auto">
+              <div className="flex flex-col md:flex-row items-center justify-between">
+                <div className="md:w-1/2 mb-6 md:mb-0">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-2">Скачайте наше приложение</h2>
+                  <p className="text-white/90 mb-4">Получите дополнительные скидки и эксклюзивные предложения, доступные только в мобильном приложении.</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button variant="secondary" size="lg">
+                      App Store
+                    </Button>
+                    <Button variant="secondary" size="lg">
+                      Google Play
+                    </Button>
+                  </div>
+                </div>
+                <div className="md:w-1/3">
+                  <img 
+                    src="https://via.placeholder.com/300x600" 
+                    alt="Mobile App" 
+                    className="max-h-80 mx-auto" 
+                  />
                 </div>
               </div>
-              <div className="md:w-1/3">
-                <img 
-                  src="https://via.placeholder.com/300x600" 
-                  alt="Mobile App" 
-                  className="max-h-80 mx-auto" 
-                />
-              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
       
       <Footer />

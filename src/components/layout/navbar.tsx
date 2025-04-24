@@ -5,24 +5,18 @@ import {
   Search,
   MapPin, 
   User,
-  LogIn,
-  Heart,
-  Bell,
-  ShoppingCart,
   Globe,
-  Menu,
-  Home,
-  Star,
-  Gift,
-  Leaf, 
-  Palette, 
-  Utensils, 
-  Mountain, 
-  Camera, 
-  GraduationCap,
-  Wine,
   Calendar,
-  Users
+  Users,
+  Compass,
+  Trophy,
+  Dumbbell,
+  Car,
+  Hotel,
+  House,
+  Bed,
+  ShoppingBag,
+  Wine
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,25 +25,61 @@ import { mainCategories, categories } from "@/data/mockData";
 // Helper function to get the correct icon component
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
-    "Gift": Gift,
-    "Home": Home,
-    "Star": Star,
-    "Leaf": Leaf,
-    "Palette": Palette,
-    "Utensils": Utensils,
-    "Mountain": Mountain,
-    "Camera": Camera,
-    "GraduationCap": GraduationCap,
-    "Wine": Wine,
+    "Gift": () => <div className="h-5 w-5 flex items-center justify-center">🎁</div>,
+    "Home": () => <div className="h-5 w-5 flex items-center justify-center">🏠</div>,
+    "Star": () => <div className="h-5 w-5 flex items-center justify-center">⭐</div>,
+    "Leaf": () => <div className="h-5 w-5 flex items-center justify-center">🍃</div>,
+    "Palette": () => <div className="h-5 w-5 flex items-center justify-center">🎨</div>,
+    "Utensils": () => <div className="h-5 w-5 flex items-center justify-center">🍽️</div>,
+    "Mountain": () => <div className="h-5 w-5 flex items-center justify-center">⛰️</div>,
+    "Camera": () => <div className="h-5 w-5 flex items-center justify-center">📷</div>,
+    "GraduationCap": () => <div className="h-5 w-5 flex items-center justify-center">🎓</div>,
+    "Wine": () => <div className="h-5 w-5 flex items-center justify-center">🍷</div>,
+    "Heart": () => <div className="h-5 w-5 flex items-center justify-center">❤️</div>,
+    "MapPin": () => <div className="h-5 w-5 flex items-center justify-center">📍</div>,
+    "Ticket": () => <div className="h-5 w-5 flex items-center justify-center">🎟️</div>,
+    "ShoppingBag": () => <div className="h-5 w-5 flex items-center justify-center">🛍️</div>,
+    "Dumbbell": () => <div className="h-5 w-5 flex items-center justify-center">🏋️</div>,
+    "Car": () => <div className="h-5 w-5 flex items-center justify-center">🚗</div>,
+    "Hotel": () => <div className="h-5 w-5 flex items-center justify-center">🏨</div>,
+    "House": () => <div className="h-5 w-5 flex items-center justify-center">🏡</div>,
+    "Bed": () => <div className="h-5 w-5 flex items-center justify-center">🛏️</div>,
+    "Compass": () => <div className="h-5 w-5 flex items-center justify-center">🧭</div>,
+    "Trophy": () => <div className="h-5 w-5 flex items-center justify-center">🏆</div>,
   };
 
-  return iconMap[iconName] || MapPin;
+  return iconMap[iconName] || (() => <div className="h-5 w-5 flex items-center justify-center">📌</div>);
 };
 
-export function Navbar() {
-  const [selectedMainCategory, setSelectedMainCategory] = useState("coupons");
+interface NavbarProps {
+  onMainCategoryChange?: (categoryId: string) => void;
+  onSubCategoryChange?: (categoryId: string) => void;
+  selectedMainCategory?: string;
+  selectedSubCategory?: string;
+}
+
+export function Navbar({ 
+  onMainCategoryChange,
+  onSubCategoryChange,
+  selectedMainCategory = "coupons",
+  selectedSubCategory
+}: NavbarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+
+  // Handle main category change
+  const handleMainCategoryChange = (categoryId: string) => {
+    if (onMainCategoryChange) {
+      onMainCategoryChange(categoryId);
+    }
+  };
+
+  // Handle subcategory change
+  const handleSubCategoryChange = (categoryId: string) => {
+    if (onSubCategoryChange) {
+      onSubCategoryChange(categoryId);
+    }
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +107,7 @@ export function Navbar() {
               return (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedMainCategory(category.id)}
+                  onClick={() => handleMainCategoryChange(category.id)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
                     selectedMainCategory === category.id
                       ? "text-orange-600"
@@ -138,14 +168,30 @@ export function Navbar() {
         {/* Subcategories */}
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
+            <Link
+              to={`/category/${selectedMainCategory}`}
+              onClick={() => handleSubCategoryChange("")}
+              className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
+                !selectedSubCategory
+                  ? "text-orange-500 border-b-2 border-orange-500"
+                  : "text-gray-500"
+              }`}
+            >
+              <div className="h-6 w-6 flex items-center justify-center">🔍</div>
+              <span className="text-xs font-medium whitespace-nowrap">
+                Все категории
+              </span>
+            </Link>
+            
             {filteredCategories.map((category) => {
               const IconComponent = getIconComponent(category.icon);
               return (
                 <Link
                   key={category.id}
                   to={`/category/${category.id}`}
+                  onClick={() => handleSubCategoryChange(category.id)}
                   className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
-                    location.pathname === `/category/${category.id}`
+                    selectedSubCategory === category.id
                       ? "text-orange-500 border-b-2 border-orange-500"
                       : "text-gray-500"
                   }`}

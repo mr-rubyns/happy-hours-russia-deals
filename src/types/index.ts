@@ -1,3 +1,4 @@
+
 export interface Deal {
   id: string;
   title: string;
@@ -18,6 +19,7 @@ export interface Deal {
   };
   category: string;
   subcategory: string;
+  mainCategory: string; // Added this field to identify main category
   tags: string[];
   soldCount: number;
   rating: number;
@@ -63,6 +65,8 @@ export interface Message {
 
 export interface FilterOptions {
   category?: string;
+  subcategory?: string; // Added subcategory filter option
+  mainCategory?: string; // Added main category filter option
   priceRange?: [number, number];
   rating?: number;
   sortBy?: 'popular' | 'price-asc' | 'price-desc' | 'rating';
