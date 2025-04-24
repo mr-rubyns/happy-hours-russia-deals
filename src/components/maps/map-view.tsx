@@ -1,7 +1,27 @@
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { ZoomIn, ZoomOut } from "lucide-react";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix for default marker icons in Leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+});
+
+// Custom icon for deals
+const dealIcon = new L.Icon({
+  iconUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f97316' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E",
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16],
+});
 
 interface MapViewProps {
   deals: Deal[];
@@ -9,19 +29,69 @@ interface MapViewProps {
   selectedDealId?: string;
 }
 
+function MapControls() {
+  const map = useMap();
+  
+  const handleZoomIn = () => {
+    map.setZoom(map.getZoom() + 1);
+  };
+  
+  const handleZoomOut = () => {
+    map.setZoom(map.getZoom() - 1);
+  };
+  
+  return (
+    <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
+      <button 
+        onClick={handleZoomIn}
+        className="bg-white rounded-md shadow-md w-8 h-8 flex items-center justify-center"
+      >
+        <ZoomIn className="w-5 h-5" />
+      </button>
+      <button 
+        onClick={handleZoomOut}
+        className="bg-white rounded-md shadow-md w-8 h-8 flex items-center justify-center"
+      >
+        <ZoomOut className="w-5 h-5" />
+      </button>
+    </div>
+  );
+}
+
+// Generate random but consistent coordinates for deals
+const getCoordinatesForDeal = (deal: Deal) => {
+  // Use deal.id as seed for "random" but consistent coordinates
+  const seed = deal.id.split('').reduce((a, b) => {
+    return a + b.charCodeAt(0);
+  }, 0);
+  
+  // Moscow coordinates as center
+  const baseLat = 55.7558;
+  const baseLng = 37.6173;
+  
+  // Generate offset based on seed (-0.1 to 0.1 degrees)
+  const latOffset = ((seed % 100) / 1000) * (seed % 2 ? 1 : -1);
+  const lngOffset = ((seed % 100) / 1000) * (Math.floor(seed / 10) % 2 ? 1 : -1);
+  
+  return [baseLat + latOffset, baseLng + lngOffset];
+};
+
+// Function to group markers into clusters
+const createClusters = (deals: Deal[]) => {
+  // For simplicity, we'll create 3 static clusters
+  return [
+    { position: [55.73, 37.55], count: 15 },
+    { position: [55.76, 37.68], count: 24 },
+    { position: [55.72, 37.60], count: 38 }
+  ];
+};
+
 export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const clusters = createClusters(deals);
   
   useEffect(() => {
-    // Simulate map loading
-    const timer = setTimeout(() => {
-      setMapLoaded(true);
-    }, 700);
-    
-    return () => {
-      clearTimeout(timer);
-    };
+    setMapLoaded(true);
   }, []);
   
   const handleMarkerClick = (deal: Deal) => {
@@ -32,10 +102,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   
   if (!mapLoaded) {
     return (
-      <div 
-        ref={mapContainerRef}
-        className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center"
-      >
+      <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Загрузка карты...</p>
@@ -46,89 +113,72 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   
   return (
     <Card className="w-full h-full overflow-hidden rounded-lg relative border border-gray-200">
-      {/* Lighter background for the map */}
-      <div className="absolute inset-0 bg-gray-100">
-        {/* Mock Map Background - using a light map style */}
-        <div 
-          className="w-full h-full"
-          style={{
-            backgroundImage: "url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/37.6173,55.7558,10,0/1200x800?access_token=pk.placeholder')",
-            backgroundSize: "cover",
-            backgroundPosition: "center"
-          }}
-        >
-          {/* Orange Deal Markers */}
-          {deals.map((deal) => (
-            <div 
+      <MapContainer 
+        center={[55.7558, 37.6173]} 
+        zoom={11} 
+        style={{ height: "100%", width: "100%" }} 
+        zoomControl={false}
+        className="z-0"
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <MapControls />
+        
+        {/* Deal Markers */}
+        {deals.map((deal) => {
+          const coords = getCoordinatesForDeal(deal);
+          
+          return (
+            <Marker
               key={deal.id}
-              className={`absolute cursor-pointer transition-all duration-300 ${
-                selectedDealId === deal.id 
-                  ? "z-10 transform scale-125" 
-                  : "z-0"
-              }`}
-              style={{
-                left: `${Math.random() * 80 + 10}%`,
-                top: `${Math.random() * 80 + 10}%`,
+              position={coords as [number, number]}
+              icon={dealIcon}
+              eventHandlers={{
+                click: () => handleMarkerClick(deal),
               }}
-              onClick={() => handleMarkerClick(deal)}
             >
-              <div className={`
-                w-8 h-8 bg-white rounded-full border-2
-                ${selectedDealId === deal.id ? "border-orange-600" : "border-orange-500"}
-                shadow-md flex items-center justify-center
-                hover:border-orange-600 transition-colors
-              `}>
-                <div className={`
-                  w-5 h-5 rounded-full
-                  ${selectedDealId === deal.id ? "bg-orange-600" : "bg-orange-500"}
-                `}></div>
-              </div>
+              <Popup>
+                <div className="p-2 max-w-[200px]">
+                  <h3 className="font-medium text-sm">{deal.title}</h3>
+                  <p className="text-orange-500 font-bold mt-1">
+                    {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                  </p>
+                </div>
+              </Popup>
               
-              {/* Price label */}
-              <div className={`
-                absolute -bottom-8 left-1/2 transform -translate-x-1/2
-                bg-white rounded-md shadow-md px-2 py-1
-                ${selectedDealId === deal.id ? "font-medium text-orange-600" : "text-gray-800"}
-                text-xs whitespace-nowrap
-              `}>
+              {/* Price Label */}
+              <div 
+                className={`absolute z-[1000] px-2 py-1 bg-white rounded-md shadow-md text-xs whitespace-nowrap ${
+                  selectedDealId === deal.id ? "font-medium text-orange-600" : "text-gray-800"
+                }`}
+                style={{ 
+                  transform: 'translate(-50%, 12px)',
+                  left: '16px', 
+                  bottom: '0'
+                }}
+              >
                 {deal.discountedPrice.toLocaleString('ru-RU')} ₽
               </div>
-            </div>
-          ))}
-          
-          {/* Orange Clusters like in the image */}
-          <div 
-            className="absolute cursor-pointer bg-orange-500 rounded-full w-10 h-10 flex items-center justify-center shadow-md border-2 border-white text-white font-bold"
-            style={{ left: '25%', top: '25%' }}
-          >
-            15
-          </div>
-          
-          <div 
-            className="absolute cursor-pointer bg-orange-500 rounded-full w-12 h-12 flex items-center justify-center shadow-md border-2 border-white text-white font-bold"
-            style={{ right: '20%', top: '30%' }}
-          >
-            24
-          </div>
-          
-          <div 
-            className="absolute cursor-pointer bg-orange-500 rounded-full w-14 h-14 flex items-center justify-center shadow-md border-2 border-white text-white font-bold"
-            style={{ bottom: '20%', left: '40%' }}
-          >
-            38
-          </div>
-        </div>
+            </Marker>
+          );
+        })}
         
-        {/* Map UI Controls */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2">
-          <button className="bg-white rounded-md shadow-md w-8 h-8 flex items-center justify-center">
-            <span className="text-xl font-bold">+</span>
-          </button>
-          <button className="bg-white rounded-md shadow-md w-8 h-8 flex items-center justify-center">
-            <span className="text-xl font-bold">-</span>
-          </button>
-        </div>
-      </div>
+        {/* Clusters */}
+        {clusters.map((cluster, index) => (
+          <Marker
+            key={`cluster-${index}`}
+            position={cluster.position as [number, number]}
+            icon={L.divIcon({
+              className: 'custom-cluster-icon',
+              html: `<div class="bg-orange-500 rounded-full flex items-center justify-center shadow-md border-2 border-white text-white font-bold" style="width: ${Math.min(40 + cluster.count / 2, 60)}px; height: ${Math.min(40 + cluster.count / 2, 60)}px;">${cluster.count}</div>`,
+              iconSize: [60, 60],
+              iconAnchor: [30, 30]
+            })}
+          />
+        ))}
+      </MapContainer>
     </Card>
   );
 }
