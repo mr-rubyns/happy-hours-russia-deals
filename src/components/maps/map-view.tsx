@@ -3,9 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
 
-// This is a placeholder component that will be replaced with Leaflet map
-// We're not using real Leaflet here since we don't have the ability to install external packages
-
 interface MapViewProps {
   deals: Deal[];
   onDealSelect?: (deal: Deal) => void;
@@ -20,7 +17,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
     // Simulate map loading
     const timer = setTimeout(() => {
       setMapLoaded(true);
-    }, 1000);
+    }, 700);
     
     return () => {
       clearTimeout(timer);
@@ -48,18 +45,19 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   }
   
   return (
-    <Card className="w-full h-full overflow-hidden border rounded-lg relative">
-      <div className="absolute inset-0 bg-gray-200">
-        {/* Mock Map Background */}
+    <Card className="w-full h-full overflow-hidden rounded-lg relative border border-gray-200">
+      {/* Lighter background for the map */}
+      <div className="absolute inset-0 bg-gray-100">
+        {/* Mock Map Background - using a light map style */}
         <div 
-          className="w-full h-full bg-gray-200"
+          className="w-full h-full"
           style={{
-            backgroundImage: "url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/37.6173,55.7558,9,0/1200x800?access_token=pk.placeholder')",
+            backgroundImage: "url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/37.6173,55.7558,10,0/1200x800?access_token=pk.placeholder')",
             backgroundSize: "cover",
             backgroundPosition: "center"
           }}
         >
-          {/* Mock Deal Markers */}
+          {/* Orange Deal Markers */}
           {deals.map((deal) => (
             <div 
               key={deal.id}
@@ -81,7 +79,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
                 hover:border-orange-600 transition-colors
               `}>
                 <div className={`
-                  w-4 h-4 rounded-full
+                  w-5 h-5 rounded-full
                   ${selectedDealId === deal.id ? "bg-orange-600" : "bg-orange-500"}
                 `}></div>
               </div>
@@ -98,7 +96,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
             </div>
           ))}
           
-          {/* Mock Clusters */}
+          {/* Orange Clusters like in the image */}
           <div 
             className="absolute cursor-pointer bg-orange-500 rounded-full w-10 h-10 flex items-center justify-center shadow-md border-2 border-white text-white font-bold"
             style={{ left: '25%', top: '25%' }}
@@ -121,7 +119,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
           </div>
         </div>
         
-        {/* Mock Map UI Controls */}
+        {/* Map UI Controls */}
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <button className="bg-white rounded-md shadow-md w-8 h-8 flex items-center justify-center">
             <span className="text-xl font-bold">+</span>

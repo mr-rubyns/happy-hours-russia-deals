@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search, X, ArrowLeft, Filter, Map } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -19,7 +18,6 @@ const MapSearch = () => {
   const [filters, setFilters] = useState<FilterOptions>({});
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleFilterChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
@@ -142,11 +140,7 @@ const MapSearch = () => {
           <div className="flex justify-between mt-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 mr-2"
-                  onClick={() => setIsFilterOpen(true)}
-                >
+                <Button variant="outline" className="flex-1 mr-2">
                   <Filter className="h-4 w-4 mr-2" />
                   Фильтры
                 </Button>
@@ -157,10 +151,7 @@ const MapSearch = () => {
                 </div>
                 <div className="p-4 overflow-auto h-[calc(100%-60px)]">
                   <FilterSidebar
-                    onFilterChange={(newFilters) => {
-                      handleFilterChange(newFilters);
-                      setIsFilterOpen(false);
-                    }}
+                    onFilterChange={handleFilterChange}
                     initialFilters={filters}
                   />
                 </div>
@@ -187,7 +178,7 @@ const MapSearch = () => {
           </div>
         </div>
         
-        <div className="container px-4 md:px-6 mx-auto py-6">
+        <div className="container px-4 md:px-6 mx-auto py-4">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Desktop Filter Sidebar */}
             <div className="hidden lg:block">
@@ -217,16 +208,25 @@ const MapSearch = () => {
                     <Search className="h-4 w-4" />
                   </Button>
                 </form>
-                <FilterSidebar onFilterChange={handleFilterChange} />
+                <FilterSidebar onFilterChange={handleFilterChange} initialFilters={filters} />
               </div>
             </div>
             
             {/* Main Content */}
             <div className="lg:col-span-3">
-              {/* Desktop view */}
-              <div className="hidden lg:flex h-[calc(100vh-160px)] gap-4">
+              {/* Desktop view - Map on top, list below */}
+              <div className="hidden lg:block">
+                {/* Map - Takes significantly less space */}
+                <div className="h-[400px] mb-4">
+                  <MapView 
+                    deals={deals} 
+                    onDealSelect={handleDealSelect}
+                    selectedDealId={selectedDeal?.id}
+                  />
+                </div>
+                
                 {/* Deal List */}
-                <div className="w-2/5 overflow-y-auto pr-2 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {deals.length > 0 ? (
                     deals.map((deal) => (
                       <DealCard
@@ -236,19 +236,10 @@ const MapSearch = () => {
                       />
                     ))
                   ) : (
-                    <div className="text-center py-10">
+                    <div className="text-center py-10 col-span-2">
                       <p className="text-gray-500">Акций не найдено</p>
                     </div>
                   )}
-                </div>
-                
-                {/* Map */}
-                <div className="w-3/5">
-                  <MapView 
-                    deals={deals} 
-                    onDealSelect={handleDealSelect}
-                    selectedDealId={selectedDeal?.id}
-                  />
                 </div>
               </div>
 
