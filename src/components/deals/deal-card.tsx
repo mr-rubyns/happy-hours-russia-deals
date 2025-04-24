@@ -23,6 +23,8 @@ export function DealCard({ deal, className, favoriteMode = false }: DealCardProp
     setIsFavorite(!isFavorite);
   };
 
+  const formattedRating = deal.rating.toFixed(1);
+
   return (
     <Link to={`/deal/${deal.slug}`}>
       <Card className={cn("h-full overflow-hidden transition-shadow hover:shadow-md", className)}>
@@ -54,7 +56,7 @@ export function DealCard({ deal, className, favoriteMode = false }: DealCardProp
             </div>
             <div className="flex items-center space-x-1 mb-1">
               <div className="text-sm bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded flex items-center">
-                {deal.rating}
+                {formattedRating}
                 <Star className="h-4 w-4 ml-0.5 fill-yellow-500 text-yellow-500" />
               </div>
               <span className="text-sm text-gray-500">
