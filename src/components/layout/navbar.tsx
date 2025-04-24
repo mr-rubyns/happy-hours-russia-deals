@@ -316,21 +316,19 @@ export function Navbar({
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               <div className="flex space-x-6 min-w-max px-4">
-                {currentSubCategory !== "" && (
-                  <button
-                    onClick={() => handleLocalSubCategoryChange("")}
-                    className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
-                      !currentSubCategory
-                        ? "text-orange-500 border-b-2 border-orange-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <div className="h-6 w-6 flex items-center justify-center">🔍</div>
-                    <span className="text-xs font-medium whitespace-nowrap">
-                      Все
-                    </span>
-                  </button>
-                )}
+                <button
+                  onClick={() => handleLocalSubCategoryChange("")}
+                  className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
+                    !currentSubCategory
+                      ? "text-orange-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  <div className="h-6 w-6 flex items-center justify-center">🔍</div>
+                  <span className="text-xs font-medium whitespace-nowrap">
+                    Все
+                  </span>
+                </button>
                 
                 {categories
                   .filter(category => category.mainCategoryId === currentMainCategory)
@@ -342,7 +340,7 @@ export function Navbar({
                         onClick={() => handleLocalSubCategoryChange(category.id)}
                         className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
                           currentSubCategory === category.id
-                            ? "text-orange-500 border-b-2 border-orange-500"
+                            ? "text-orange-500"
                             : "text-gray-500"
                         }`}
                       >
