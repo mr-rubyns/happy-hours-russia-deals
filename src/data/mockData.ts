@@ -1,7 +1,8 @@
-import { Deal, User, Review, Message } from "@/types";
+
+import { Deal, User, Review, Message, Category } from "@/types";
 import { 
   Sparkles, 
-  Spa, 
+  Leaf, 
   Palette, 
   Utensils, 
   Mountain, 
@@ -13,7 +14,7 @@ import {
 // Define categories
 export const categories = [
   { id: "entertainment", name: "Развлечения", icon: "Sparkles" },
-  { id: "beauty", name: "Красота и SPA", icon: "Spa" },
+  { id: "beauty", name: "Красота и SPA", icon: "Leaf" },
   { id: "masterclass", name: "Мастер-классы", icon: "Palette" },
   { id: "restaurants", name: "Рестораны", icon: "Utensils" },
   { id: "excursions", name: "Экскурсии", icon: "Mountain" },

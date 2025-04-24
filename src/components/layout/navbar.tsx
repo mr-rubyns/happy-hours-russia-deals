@@ -12,7 +12,7 @@ import {
   Globe,
   Menu,
   Sparkles,
-  Spa,
+  Leaf,
   Palette,
   Utensils,
   Mountain,
@@ -43,7 +43,7 @@ import { categories } from "@/data/mockData";
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
     "Sparkles": Sparkles,
-    "Spa": Spa,
+    "Leaf": Leaf,
     "Palette": Palette,
     "Utensils": Utensils,
     "Mountain": Mountain,
