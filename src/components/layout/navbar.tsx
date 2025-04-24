@@ -1,9 +1,9 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   Search,
-  Globe,
-  User,
+  UserRound,
   X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -134,12 +134,28 @@ export function Navbar({
             })}
           </nav>
 
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <Globe className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-4">
+              <Link to="/login" className="text-gray-600 hover:text-orange-500">
+                Вход
+              </Link>
+              <Link to="/register" className="text-gray-600 hover:text-orange-500">
+                Регистрация
+              </Link>
+              <Link to="/map-search" className="text-gray-600 hover:text-orange-500">
+                Карта
+              </Link>
+            </nav>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-10 w-10 rounded-full bg-gray-100 hover:bg-gray-200"
+              asChild
+            >
+              <Link to="/profile">
+                <UserRound className="h-6 w-6" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -261,3 +277,4 @@ export function Navbar({
     </header>
   );
 }
+
