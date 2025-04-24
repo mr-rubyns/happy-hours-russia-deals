@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -8,10 +7,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-// Direct import of the MarkerClusterGroup component
 import MarkerClusterGroup from "react-leaflet-cluster";
 
-// Fix for default marker icons in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
@@ -19,7 +16,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Custom icon for deals
 const dealIcon = new L.Icon({
   iconUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f97316' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E",
   iconSize: [32, 32],
@@ -62,18 +58,14 @@ function MapControls() {
   );
 }
 
-// Generate random but consistent coordinates for deals
 const getCoordinatesForDeal = (deal: Deal) => {
-  // Use deal.id as seed for "random" but consistent coordinates
   const seed = deal.id.split('').reduce((a, b) => {
     return a + b.charCodeAt(0);
   }, 0);
   
-  // Moscow coordinates as center
   const baseLat = 55.7558;
   const baseLng = 37.6173;
   
-  // Generate offset based on seed (-0.1 to 0.1 degrees)
   const latOffset = ((seed % 100) / 1000) * (seed % 2 ? 1 : -1);
   const lngOffset = ((seed % 100) / 1000) * (Math.floor(seed / 10) % 2 ? 1 : -1);
   
@@ -107,7 +99,6 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   return (
     <Card className="w-full h-full overflow-hidden rounded-lg relative border border-gray-200">
       <MapContainer 
-        // @ts-ignore - We need to ignore TypeScript here as react-leaflet types are not perfectly aligned
         center={[55.7558, 37.6173]} 
         zoom={11} 
         style={{ height: "100%", width: "100%" }} 
@@ -115,15 +106,12 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
         className="z-0"
       >
         <TileLayer
-          // @ts-ignore - Similar issue with TileLayer props
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <MapControls />
         
-        {/* Deal Markers with Clustering */}
         <MarkerClusterGroup
-          // @ts-ignore - Types don't perfectly match but it works
           chunkedLoading
           iconCreateFunction={(cluster) => {
             const count = cluster.getChildCount();
@@ -143,23 +131,51 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
             return (
               <Marker
                 key={deal.id}
-                // @ts-ignore - We need to use these props even though TypeScript is complaining
                 position={coords}
                 icon={dealIcon}
                 eventHandlers={{
                   click: () => handleMarkerClick(deal),
                 }}
               >
-                <Popup>
-                  <div className="p-2 max-w-[200px]">
-                    <h3 className="font-medium text-sm">{deal.title}</h3>
-                    <p className="text-orange-500 font-bold mt-1">
-                      {deal.discountedPrice.toLocaleString('ru-RU')} ₽
-                    </p>
+                <Popup className="w-[280px]">
+                  <div className="rounded-lg overflow-hidden">
+                    {deal.images && deal.images.length > 0 && (
+                      <div className="relative h-[140px] w-full">
+                        <img
+                          src={deal.images[0]}
+                          alt={deal.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-semibold py-1 px-2 rounded">
+                          -{deal.discountPercentage}%
+                        </div>
+                      </div>
+                    )}
+                    <div className="p-3">
+                      <h3 className="font-medium text-sm line-clamp-2">{deal.title}</h3>
+                      <div className="flex items-center space-x-1 mt-2">
+                        <div className="text-xs bg-yellow-100 text-yellow-800 px-1 rounded">
+                          {deal.rating}★
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          ({deal.reviewCount})
+                        </span>
+                      </div>
+                      <div className="flex items-baseline gap-2 mt-2">
+                        <span className="text-orange-600 font-bold text-sm">
+                          {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                        </span>
+                        <span className="text-gray-500 text-xs line-through">
+                          {deal.originalPrice.toLocaleString('ru-RU')} ₽
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {deal.location.address}
+                      </div>
+                    </div>
                   </div>
                 </Popup>
                 
-                {/* Price Label */}
                 <div 
                   className={`absolute z-[1000] px-2 py-1 bg-white rounded-md shadow-md text-xs whitespace-nowrap ${
                     selectedDealId === deal.id ? "font-medium text-orange-600" : "text-gray-800"
