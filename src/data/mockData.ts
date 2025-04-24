@@ -1,16 +1,25 @@
-
 import { Deal, User, Review, Message } from "@/types";
+import { 
+  Sparkles, 
+  Spa, 
+  Palette, 
+  Utensils, 
+  Mountain, 
+  Camera, 
+  GraduationCap,
+  Wine 
+} from "lucide-react";
 
 // Define categories
 export const categories = [
-  { id: "entertainment", name: "Развлечения" },
-  { id: "beauty", name: "Красота и SPA" },
-  { id: "masterclass", name: "Мастер-классы" },
-  { id: "restaurants", name: "Рестораны" },
-  { id: "excursions", name: "Экскурсии" },
-  { id: "photo", name: "Фото и видео" },
-  { id: "education", name: "Обучение" },
-  { id: "tasting", name: "Дегустации" }
+  { id: "entertainment", name: "Развлечения", icon: "Sparkles" },
+  { id: "beauty", name: "Красота и SPA", icon: "Spa" },
+  { id: "masterclass", name: "Мастер-классы", icon: "Palette" },
+  { id: "restaurants", name: "Рестораны", icon: "Utensils" },
+  { id: "excursions", name: "Экскурсии", icon: "Mountain" },
+  { id: "photo", name: "Фото и видео", icon: "Camera" },
+  { id: "education", name: "Обучение", icon: "GraduationCap" },
+  { id: "tasting", name: "Дегустации", icon: "Wine" }
 ];
 
 const generateDealImages = (id: number) => {

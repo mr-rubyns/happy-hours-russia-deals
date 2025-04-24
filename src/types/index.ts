@@ -1,4 +1,3 @@
-
 export interface Deal {
   id: string;
   title: string;
@@ -67,4 +66,11 @@ export interface FilterOptions {
   priceRange?: [number, number];
   rating?: number;
   sortBy?: 'popular' | 'price-asc' | 'price-desc' | 'rating';
+}
+
+// Add a Category interface
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
 }

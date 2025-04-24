@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -10,6 +11,14 @@ import {
   ShoppingCart,
   Globe,
   Menu,
+  Sparkles,
+  Spa,
+  Palette,
+  Utensils,
+  Mountain,
+  Camera,
+  GraduationCap,
+  Wine
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +38,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { categories } from "@/data/mockData";
+
+// Helper function to get the correct icon component
+const getIconComponent = (iconName: string) => {
+  const iconMap: Record<string, React.FC<{ className?: string }>> = {
+    "Sparkles": Sparkles,
+    "Spa": Spa,
+    "Palette": Palette,
+    "Utensils": Utensils,
+    "Mountain": Mountain,
+    "Camera": Camera,
+    "GraduationCap": GraduationCap,
+    "Wine": Wine,
+    "MapPin": MapPin // Default fallback
+  };
+
+  return iconMap[iconName] || MapPin;
+};
 
 export function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -157,7 +183,7 @@ export function Navbar() {
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
             {categories.map((category) => {
-              const Icon = category.icon || MapPin;
+              const IconComponent = getIconComponent(category.icon);
               return (
                 <Link
                   key={category.id}
@@ -168,7 +194,7 @@ export function Navbar() {
                       : "text-gray-500"
                   }`}
                 >
-                  <Icon className="h-6 w-6" />
+                  <IconComponent className="h-6 w-6" />
                   <span className="text-xs font-medium whitespace-nowrap">
                     {category.name}
                   </span>
