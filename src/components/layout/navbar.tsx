@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -140,7 +139,61 @@ export function Navbar() {
             </Link>
 
             {/* User Menu */}
-            {isLoggedIn ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative">
+                  <User className="h-5 w-5 mr-1" />
+                  <span className="hidden sm:inline">Меню</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuItem asChild>
+                  <Link to="/" className="w-full cursor-pointer">
+                    Главная
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/map-search" className="w-full cursor-pointer">
+                    Поиск по карте
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="w-full cursor-pointer">
+                    Личный кабинет
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/purchased" className="w-full cursor-pointer">
+                    Мои покупки
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/seller" className="w-full cursor-pointer">
+                    Кабинет продавца
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/login" className="w-full cursor-pointer">
+                    Вход
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/register" className="w-full cursor-pointer">
+                    Регистрация
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/forgot-password" className="w-full cursor-pointer">
+                    Восстановление пароля
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* User Menu */}
+            {/*isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative">
@@ -226,6 +279,7 @@ export function Navbar() {
                 </DialogContent>
               </Dialog>
             )}
+          */}
           </div>
         </div>
 
