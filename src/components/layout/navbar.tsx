@@ -385,7 +385,7 @@ export function Navbar({
                     <div className="flex-1 overflow-y-auto">
                       <FilterSidebar
                         onFilterChange={handleFilterChange}
-                        className="border-none p-0"
+                        className="p-0"
                       />
                     </div>
                   </DialogContent>
