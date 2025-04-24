@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/navbar';
@@ -10,6 +10,35 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import { mockDeals, categories } from '@/data/mockData';
 import { FilterOptions } from '@/types';
+
+// Import the getIconComponent utility from navbar for consistency
+const getIconComponent = (iconName: string) => {
+  const iconMap: Record<string, React.FC<{ className?: string }>> = {
+    "Gift": () => <div className="h-5 w-5 flex items-center justify-center">🎁</div>,
+    "Home": () => <div className="h-5 w-5 flex items-center justify-center">🏠</div>,
+    "Star": () => <div className="h-5 w-5 flex items-center justify-center">⭐</div>,
+    "Leaf": () => <div className="h-5 w-5 flex items-center justify-center">🍃</div>,
+    "Palette": () => <div className="h-5 w-5 flex items-center justify-center">🎨</div>,
+    "Utensils": () => <div className="h-5 w-5 flex items-center justify-center">🍽️</div>,
+    "Mountain": () => <div className="h-5 w-5 flex items-center justify-center">⛰️</div>,
+    "Camera": () => <div className="h-5 w-5 flex items-center justify-center">📷</div>,
+    "GraduationCap": () => <div className="h-5 w-5 flex items-center justify-center">🎓</div>,
+    "Wine": () => <div className="h-5 w-5 flex items-center justify-center">🍷</div>,
+    "Heart": () => <div className="h-5 w-5 flex items-center justify-center">❤️</div>,
+    "MapPin": () => <div className="h-5 w-5 flex items-center justify-center">📍</div>,
+    "Ticket": () => <div className="h-5 w-5 flex items-center justify-center">🎟️</div>,
+    "ShoppingBag": () => <div className="h-5 w-5 flex items-center justify-center">🛍️</div>,
+    "Dumbbell": () => <div className="h-5 w-5 flex items-center justify-center">🏋️</div>,
+    "Car": () => <div className="h-5 w-5 flex items-center justify-center">🚗</div>,
+    "Hotel": () => <div className="h-5 w-5 flex items-center justify-center">🏨</div>,
+    "House": () => <div className="h-5 w-5 flex items-center justify-center">🏡</div>,
+    "Bed": () => <div className="h-5 w-5 flex items-center justify-center">🛏️</div>,
+    "Compass": () => <div className="h-5 w-5 flex items-center justify-center">🧭</div>,
+    "Trophy": () => <div className="h-5 w-5 flex items-center justify-center">🏆</div>,
+  };
+
+  return iconMap[iconName] || (() => <div className="h-5 w-5 flex items-center justify-center">📌</div>);
+};
 
 const Index = () => {
   const [selectedMainCategory, setSelectedMainCategory] = useState("coupons");
@@ -163,22 +192,25 @@ const Index = () => {
             <div className="container px-4 md:px-6 mx-auto">
               <h2 className="text-2xl font-bold mb-6">Категории</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {currentSubcategories.map((category) => (
-                  <div 
-                    key={category.id} 
-                    onClick={() => handleSubCategoryChange(category.id)}
-                    className="cursor-pointer"
-                  >
-                    <Card className="h-full hover:shadow-md transition-shadow">
-                      <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
-                          {React.createElement(getIconComponent(category.icon), { className: "text-orange-600 text-xl" })}
-                        </div>
-                        <h3 className="font-medium">{category.name}</h3>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
+                {currentSubcategories.map((category) => {
+                  const IconComponent = getIconComponent(category.icon);
+                  return (
+                    <div 
+                      key={category.id} 
+                      onClick={() => handleSubCategoryChange(category.id)}
+                      className="cursor-pointer"
+                    >
+                      <Card className="h-full hover:shadow-md transition-shadow">
+                        <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                          <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
+                            <IconComponent className="text-orange-600 text-xl" />
+                          </div>
+                          <h3 className="font-medium">{category.name}</h3>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  );
+                })}
                 <Link to="/categories">
                   <Card className="h-full hover:shadow-md transition-shadow border-dashed">
                     <CardContent className="p-4 flex flex-col items-center justify-center text-center">
