@@ -6,6 +6,10 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import "leaflet.markercluster";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 // Fix for default marker icons in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -76,35 +80,8 @@ const getCoordinatesForDeal = (deal: Deal) => {
   return [baseLat + latOffset, baseLng + lngOffset] as [number, number];
 };
 
-// Function to group markers into clusters
-const createClusters = (deals: Deal[]) => {
-  // For simplicity, we'll create 3 static clusters
-  return [
-    { position: [55.73, 37.55] as [number, number], count: 15 },
-    { position: [55.76, 37.68] as [number, number], count: 24 },
-    { position: [55.72, 37.60] as [number, number], count: 38 }
-  ];
-};
-
-// Helper types for Leaflet components
-type LeafletElement = L.Map | L.Marker | L.TileLayer;
-interface LeafletProps {
-  ref?: React.RefObject<LeafletElement>;
-}
-
-// Define explicit types for MapContainer, TileLayer, and Marker props
-interface ExtendedMapContainerProps {
-  center: [number, number];
-  zoom: number;
-  style?: React.CSSProperties;
-  zoomControl?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}
-
 export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
-  const clusters = createClusters(deals);
   
   useEffect(() => {
     setMapLoaded(true);
@@ -144,60 +121,61 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
         />
         <MapControls />
         
-        {/* Deal Markers */}
-        {deals.map((deal) => {
-          const coords = getCoordinatesForDeal(deal);
-          
-          return (
-            <Marker
-              key={deal.id}
-              // @ts-ignore - We need to use these props even though TypeScript is complaining
-              position={coords}
-              icon={dealIcon}
-              eventHandlers={{
-                click: () => handleMarkerClick(deal),
-              }}
-            >
-              <Popup>
-                <div className="p-2 max-w-[200px]">
-                  <h3 className="font-medium text-sm">{deal.title}</h3>
-                  <p className="text-orange-500 font-bold mt-1">
-                    {deal.discountedPrice.toLocaleString('ru-RU')} ₽
-                  </p>
-                </div>
-              </Popup>
-              
-              {/* Price Label */}
-              <div 
-                className={`absolute z-[1000] px-2 py-1 bg-white rounded-md shadow-md text-xs whitespace-nowrap ${
-                  selectedDealId === deal.id ? "font-medium text-orange-600" : "text-gray-800"
-                }`}
-                style={{ 
-                  transform: 'translate(-50%, 12px)',
-                  left: '16px', 
-                  bottom: '0'
+        {/* Deal Markers with Clustering */}
+        <MarkerClusterGroup
+          // @ts-ignore - Types don't perfectly match but it works
+          chunkedLoading
+          iconCreateFunction={(cluster) => {
+            const count = cluster.getChildCount();
+            const size = Math.min(40 + count / 2, 60);
+            
+            return L.divIcon({
+              html: `<div class="bg-orange-500 rounded-full flex items-center justify-center shadow-md border-2 border-white text-white font-bold" style="width: ${size}px; height: ${size}px;">${count}</div>`,
+              className: 'custom-cluster-icon',
+              iconSize: L.point(size, size),
+              iconAnchor: L.point(size/2, size/2)
+            });
+          }}
+        >
+          {deals.map((deal) => {
+            const coords = getCoordinatesForDeal(deal);
+            
+            return (
+              <Marker
+                key={deal.id}
+                // @ts-ignore - We need to use these props even though TypeScript is complaining
+                position={coords}
+                icon={dealIcon}
+                eventHandlers={{
+                  click: () => handleMarkerClick(deal),
                 }}
               >
-                {deal.discountedPrice.toLocaleString('ru-RU')} ₽
-              </div>
-            </Marker>
-          );
-        })}
-        
-        {/* Clusters */}
-        {clusters.map((cluster, index) => (
-          <Marker
-            key={`cluster-${index}`}
-            // @ts-ignore - Also needs to ignore type checking for the same reason
-            position={cluster.position}
-            icon={L.divIcon({
-              className: 'custom-cluster-icon',
-              html: `<div class="bg-orange-500 rounded-full flex items-center justify-center shadow-md border-2 border-white text-white font-bold" style="width: ${Math.min(40 + cluster.count / 2, 60)}px; height: ${Math.min(40 + cluster.count / 2, 60)}px;">${cluster.count}</div>`,
-              iconSize: [60, 60],
-              iconAnchor: [30, 30]
-            })}
-          />
-        ))}
+                <Popup>
+                  <div className="p-2 max-w-[200px]">
+                    <h3 className="font-medium text-sm">{deal.title}</h3>
+                    <p className="text-orange-500 font-bold mt-1">
+                      {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                    </p>
+                  </div>
+                </Popup>
+                
+                {/* Price Label */}
+                <div 
+                  className={`absolute z-[1000] px-2 py-1 bg-white rounded-md shadow-md text-xs whitespace-nowrap ${
+                    selectedDealId === deal.id ? "font-medium text-orange-600" : "text-gray-800"
+                  }`}
+                  style={{ 
+                    transform: 'translate(-50%, 12px)',
+                    left: '16px', 
+                    bottom: '0'
+                  }}
+                >
+                  {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                </div>
+              </Marker>
+            );
+          })}
+        </MarkerClusterGroup>
       </MapContainer>
     </Card>
   );
