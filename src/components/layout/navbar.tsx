@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -22,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mainCategories, categories } from "@/data/mockData";
 
-// Helper function to get the correct icon component
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
     "Gift": () => <div className="h-5 w-5 flex items-center justify-center">🎁</div>,
@@ -67,14 +65,12 @@ export function Navbar({
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
 
-  // Handle main category change
   const handleMainCategoryChange = (categoryId: string) => {
     if (onMainCategoryChange) {
       onMainCategoryChange(categoryId);
     }
   };
 
-  // Handle subcategory change
   const handleSubCategoryChange = (categoryId: string) => {
     if (onSubCategoryChange) {
       onSubCategoryChange(categoryId);
@@ -83,7 +79,6 @@ export function Navbar({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search submission
   };
 
   const filteredCategories = categories.filter(
@@ -93,7 +88,6 @@ export function Navbar({
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b">
       <div className="container px-4 mx-auto">
-        {/* Main categories */}
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex-shrink-0">
             <span className="text-xl font-bold text-orange-600">
@@ -131,7 +125,6 @@ export function Navbar({
           </div>
         </div>
 
-        {/* Search bar */}
         <div className="py-4">
           <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4 max-w-4xl mx-auto">
             <div className="flex-1 flex items-center space-x-4 bg-white rounded-full border shadow-sm hover:shadow-md transition-shadow p-2">
@@ -165,7 +158,6 @@ export function Navbar({
           </form>
         </div>
 
-        {/* Subcategories */}
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
             <Link

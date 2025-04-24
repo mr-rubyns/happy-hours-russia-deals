@@ -69,9 +69,10 @@ const Index = () => {
     setSelectedSubCategory(""); // Reset subcategory when main category changes
   };
 
-  // Handle subcategory change
+  // Handle subcategory change - Important: This now stays on the current page and just filters
   const handleSubCategoryChange = (categoryId: string) => {
     setSelectedSubCategory(categoryId);
+    // No navigation - just filter in-place
   };
 
   const promotions = [
@@ -211,7 +212,8 @@ const Index = () => {
                     </div>
                   );
                 })}
-                <Link to="/categories">
+                {/* Using a button instead of Link to avoid navigation to a 404 page */}
+                <div>
                   <Card className="h-full hover:shadow-md transition-shadow border-dashed">
                     <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                       <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
@@ -220,7 +222,7 @@ const Index = () => {
                       <h3 className="font-medium">Все категории</h3>
                     </CardContent>
                   </Card>
-                </Link>
+                </div>
               </div>
             </div>
           </section>
