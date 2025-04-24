@@ -1,10 +1,16 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserRound, Search, X, ArrowLeft, ArrowRight, Filter, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { FilterSidebar } from "@/components/deals/filter-sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,7 +71,6 @@ export function Navbar({
 
   const isHomePage = location.pathname === '/';
 
-  // Use these variables in place of the undefined ones
   const currentMainCategory = selectedMainCategory || localMainCategory;
   const currentSubCategory = selectedSubCategory || localSubCategory;
   
@@ -134,6 +139,8 @@ export function Navbar({
     }
   };
 
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -144,6 +151,11 @@ export function Navbar({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleFilterChange = (filters: any) => {
+    console.log('Filters changed:', filters);
+    setIsFilterOpen(false);
+  };
 
   return (
     <header className="w-full bg-white border-b">
@@ -361,12 +373,21 @@ export function Navbar({
               </div>
 
               <div className="flex items-center gap-2 ml-4">
-                <Link to="/filter">
-                  <Button variant="outline" size="sm" className="gap-2">
+                <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                  <Button variant="outline" size="sm" className="gap-2" onClick={() => setIsFilterOpen(true)}>
                     <Filter className="h-4 w-4" />
                     <span>Фильтры</span>
                   </Button>
-                </Link>
+                  <DialogContent className="max-w-sm sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Фильтры</DialogTitle>
+                    </DialogHeader>
+                    <FilterSidebar
+                      onFilterChange={handleFilterChange}
+                      className="border-none p-0"
+                    />
+                  </DialogContent>
+                </Dialog>
                 <Link to="/map-search">
                   <Button variant="outline" size="sm" className="gap-2">
                     <MapIcon className="h-4 w-4" />
