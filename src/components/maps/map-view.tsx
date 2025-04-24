@@ -139,18 +139,16 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
               >
                 <Popup className="w-[280px]">
                   <div className="rounded-lg overflow-hidden">
-                    {deal.images && deal.images.length > 0 && (
-                      <div className="relative h-[140px] w-full">
-                        <img
-                          src={deal.images[0]}
-                          alt={deal.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-semibold py-1 px-2 rounded">
-                          -{deal.discountPercentage}%
-                        </div>
+                    <div className="relative h-[140px] w-full flex items-center justify-center bg-[#F2FCE2]">
+                      <img 
+                        src="/lovable-uploads/9039bea5-3bc5-43e1-a2d5-8432d9ed47f6.png" 
+                        alt={deal.title} 
+                        className="max-w-[80%] max-h-[80%] object-contain"
+                      />
+                      <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-semibold py-1 px-2 rounded">
+                        -{deal.discountPercentage}%
                       </div>
-                    )}
+                    </div>
                     <div className="p-3">
                       <h3 className="font-medium text-sm line-clamp-2">{deal.title}</h3>
                       <div className="flex items-center space-x-1 mt-2">
