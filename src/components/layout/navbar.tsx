@@ -155,7 +155,7 @@ export function Navbar({
               onClick={() => handleSubCategoryChange("")}
               className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                 !selectedSubCategory
-                  ? "text-orange-500 border-b-2 border-orange-500"
+                  ? "text-orange-500"
                   : "text-gray-500"
               }`}
             >
@@ -173,7 +173,7 @@ export function Navbar({
                   onClick={() => handleSubCategoryChange(category.id)}
                   className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                     selectedSubCategory === category.id
-                      ? "text-orange-500 border-b-2 border-orange-500"
+                      ? "text-orange-500"
                       : "text-gray-500"
                   }`}
                 >
