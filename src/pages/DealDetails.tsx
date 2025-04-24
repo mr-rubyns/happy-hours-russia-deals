@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -8,6 +9,9 @@ import {
   Star,
   Share,
   Heart,
+  FileText,
+  AlertCircle,
+  Users,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -208,126 +212,171 @@ const DealDetails = () => {
 
           {/* Details Tabs */}
           <div className="mt-8">
-            <Tabs defaultValue="details">
-              <TabsList className="w-full border-b justify-start rounded-none">
-                <TabsTrigger value="details">Описание</TabsTrigger>
-                <TabsTrigger value="conditions">Условия</TabsTrigger>
-                <TabsTrigger value="reviews">Отзывы</TabsTrigger>
-                <TabsTrigger value="location">Расположение</TabsTrigger>
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList className="w-full border-b justify-start rounded-none bg-transparent space-x-8">
+                <TabsTrigger 
+                  value="details" 
+                  className="flex items-center gap-2 px-1 py-4 -mb-px data-[state=active]:text-orange-500 data-[state=active]:border-b-2 data-[state=active]:border-orange-500"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Описание</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="conditions"
+                  className="flex items-center gap-2 px-1 py-4 -mb-px data-[state=active]:text-orange-500 data-[state=active]:border-b-2 data-[state=active]:border-orange-500"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <span>Условия</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="reviews"
+                  className="flex items-center gap-2 px-1 py-4 -mb-px data-[state=active]:text-orange-500 data-[state=active]:border-b-2 data-[state=active]:border-orange-500"
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Отзывы</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="location"
+                  className="flex items-center gap-2 px-1 py-4 -mb-px data-[state=active]:text-orange-500 data-[state=active]:border-b-2 data-[state=active]:border-orange-500"
+                >
+                  <MapPin className="h-4 w-4" />
+                  <span>Расположение</span>
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="details" className="py-6">
-                <h2 className="text-xl font-semibold mb-4">Описание</h2>
-                <div className="prose max-w-none">
-                  <p className="mb-4">{deal.description}</p>
-                  <h3 className="text-lg font-medium mb-2">Особенности:</h3>
-                  <ul className="space-y-2 list-disc pl-5">
-                    {deal.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
+                <div className="max-w-3xl space-y-6">
+                  <h2 className="text-2xl font-semibold">Описание</h2>
+                  <div className="prose max-w-none text-gray-700">
+                    <p className="text-lg leading-relaxed">{deal.description}</p>
+                    <div className="mt-8">
+                      <h3 className="text-xl font-medium mb-4">Особенности:</h3>
+                      <ul className="space-y-3 list-none">
+                        {deal.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <div className="h-6 w-6 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                              <span className="text-orange-600">•</span>
+                            </div>
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
               
               <TabsContent value="conditions" className="py-6">
-                <h2 className="text-xl font-semibold mb-4">Условия</h2>
-                <div className="bg-gray-50 p-4 rounded-md mb-6">
-                  <ul className="space-y-2">
-                    {deal.conditions.map((condition, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="text-orange-500 mr-2">•</span>
-                        {condition}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="max-w-3xl space-y-6">
+                  <h2 className="text-2xl font-semibold">Условия</h2>
+                  <div className="bg-orange-50 rounded-lg p-6">
+                    <ul className="space-y-4">
+                      {deal.conditions.map((condition, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <div className="h-6 w-6 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                            <AlertCircle className="h-4 w-4 text-orange-600" />
+                          </div>
+                          <span className="text-gray-700">{condition}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+                    <h3 className="text-xl font-medium mb-4">Дополнительная информация</h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      После оплаты вы получите уникальный код купона на email. 
+                      Предъявите его при посещении или используйте для бронирования.
+                    </p>
+                  </div>
                 </div>
-                
-                <h3 className="text-lg font-medium mb-2">Дополнительная информация</h3>
-                <p className="text-gray-600">
-                  После оплаты вы получите уникальный код купона на email. 
-                  Предъявите его при посещении или используйте для бронирования.
-                </p>
               </TabsContent>
               
               <TabsContent value="reviews" className="py-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold">Отзывы</h2>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Оставить отзыв</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Оставить отзыв</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4 pt-4">
-                        <p>Функционал добавления отзывов в демо-режиме недоступен.</p>
-                        <Button>Закрыть</Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                
-                {dealReviews.length > 0 ? (
-                  <div className="space-y-6">
-                    {dealReviews.map((review) => (
-                      <div key={review.id} className="border-b pb-4">
-                        <div className="flex items-center mb-2">
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden mr-3">
-                            {review.userAvatar ? (
-                              <img
-                                src={review.userAvatar}
-                                alt={review.userName}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                {review.userName.charAt(0)}
+                <div className="max-w-3xl">
+                  <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-2xl font-semibold">Отзывы</h2>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button className="bg-orange-500 hover:bg-orange-600">
+                          Оставить отзыв
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Оставить отзыв</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 pt-4">
+                          <p className="text-gray-600">Функционал добавления отзывов в демо-режиме недоступен.</p>
+                          <Button className="w-full">Закрыть</Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                  
+                  {dealReviews.length > 0 ? (
+                    <div className="space-y-6">
+                      {dealReviews.map((review) => (
+                        <div key={review.id} className="border rounded-lg p-6 bg-white">
+                          <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-full bg-gray-100 flex-shrink-0 overflow-hidden">
+                              {review.userAvatar ? (
+                                <img
+                                  src={review.userAvatar}
+                                  alt={review.userName}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-medium">
+                                  {review.userName.charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-grow">
+                              <p className="font-medium text-lg">{review.userName}</p>
+                              <div className="flex items-center gap-2 mt-1 mb-3">
+                                <div className="flex gap-0.5">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`h-4 w-4 ${
+                                        i < review.rating
+                                          ? "fill-orange-400 text-orange-400"
+                                          : "fill-gray-200 text-gray-200"
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-sm text-gray-500">
+                                  {new Date(review.createdAt).toLocaleDateString('ru-RU')}
+                                </span>
                               </div>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium">{review.userName}</p>
-                            <div className="flex items-center">
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`h-4 w-4 ${
-                                      i < review.rating
-                                        ? "fill-yellow-400 text-yellow-400"
-                                        : "fill-gray-200 text-gray-200"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-xs text-gray-500 ml-2">
-                                {new Date(review.createdAt).toLocaleDateString('ru-RU')}
-                              </span>
+                              <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                             </div>
                           </div>
                         </div>
-                        <p className="text-gray-700">{review.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-10 text-gray-500">
-                    <p>Пока нет отзывов. Будьте первым!</p>
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 bg-gray-50 rounded-lg">
+                      <Users className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-500 text-lg">Пока нет отзывов. Будьте первым!</p>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
               
               <TabsContent value="location" className="py-6">
-                <h2 className="text-xl font-semibold mb-4">Расположение</h2>
-                <div className="mb-4">
-                  <p className="text-gray-600">
-                    {deal.location.address}, {deal.location.city}
-                  </p>
-                </div>
-                
-                <div className="h-80 rounded-lg overflow-hidden">
-                  <MapView deals={[deal]} selectedDealId={deal.id} />
+                <div className="max-w-3xl space-y-6">
+                  <h2 className="text-2xl font-semibold">Расположение</h2>
+                  <div className="flex items-center gap-2 text-gray-600 mb-6">
+                    <MapPin className="h-5 w-5 text-orange-500" />
+                    <p className="text-lg">{deal.location.address}, {deal.location.city}</p>
+                  </div>
+                  
+                  <div className="h-[400px] rounded-lg overflow-hidden border">
+                    <MapView deals={[deal]} selectedDealId={deal.id} />
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
