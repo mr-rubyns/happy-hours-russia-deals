@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -43,6 +42,9 @@ const DealDetails = () => {
   
   // Get reviews for this deal
   const dealReviews = mockReviews.filter((r) => r.dealId === deal?.id);
+
+  // Format the rating to show only 1 decimal place
+  const formattedRating = deal?.rating.toFixed(1);
 
   const handleBookNow = () => {
     setIsBooked(true);
@@ -129,7 +131,7 @@ const DealDetails = () => {
                 <div className="flex items-center mb-3">
                   <div className="flex items-center bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 mr-2">
                     <Star className="h-4 w-4 fill-yellow-500 text-yellow-500 mr-1" />
-                    <span className="font-medium">{deal.rating}</span>
+                    <span className="font-medium">{formattedRating}</span>
                   </div>
                   <span className="text-sm text-gray-600">
                     {deal.reviewCount} отзывов
