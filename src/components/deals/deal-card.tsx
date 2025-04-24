@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -53,8 +53,9 @@ export function DealCard({ deal, className, favoriteMode = false }: DealCardProp
               <span>{deal.location.address}, {deal.location.city}</span>
             </div>
             <div className="flex items-center space-x-1 mb-1">
-              <div className="text-sm bg-yellow-100 text-yellow-800 px-1 rounded">
-                {deal.rating}★
+              <div className="text-sm bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded flex items-center">
+                {deal.rating}
+                <Star className="h-4 w-4 ml-0.5 fill-yellow-500 text-yellow-500" />
               </div>
               <span className="text-sm text-gray-500">
                 ({deal.reviewCount} отзывов)

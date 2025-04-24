@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useMemo } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -164,8 +165,9 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
                     <div className="p-3">
                       <h3 className="font-medium text-sm line-clamp-2">{deal.title}</h3>
                       <div className="flex items-center space-x-1 mt-2">
-                        <div className="text-xs bg-yellow-100 text-yellow-800 px-1 rounded">
-                          {deal.rating}★
+                        <div className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded flex items-center">
+                          {deal.rating}
+                          <Star className="h-3 w-3 ml-0.5 fill-yellow-500 text-yellow-500" />
                         </div>
                         <span className="text-xs text-gray-500">
                           ({deal.reviewCount})
