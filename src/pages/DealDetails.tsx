@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
@@ -29,12 +28,14 @@ import {
 import { mockDeals, mockReviews } from "@/data/mockData";
 import { DealGrid } from "@/components/deals/deal-grid";
 import { useToast } from "@/components/ui/use-toast";
+import { ReviewForm } from "@/components/reviews/review-form";
 
 const DealDetails = () => {
   const { slug } = useParams();
   const { toast } = useToast();
   const [isBooked, setIsBooked] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   // Find the current deal
   const deal = mockDeals.find((d) => d.slug === slug);
@@ -73,6 +74,15 @@ const DealDetails = () => {
       description: "Теперь вы можете поделиться этой акцией.",
       duration: 2000,
     });
+  };
+
+  const handleReviewSubmit = (data: any) => {
+    console.log("Review submitted:", data);
+    toast({
+      title: "Спасибо за отзыв!",
+      description: "Ваш отзыв будет опубликован после модерации.",
+    });
+    setIsReviewModalOpen(false);
   };
 
   if (!deal) {
@@ -295,29 +305,24 @@ const DealDetails = () => {
               <TabsContent value="reviews" className="py-6">
                 <div className="max-w-3xl">
                   <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-semibold">Отзывы</h2>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button className="bg-orange-500 hover:bg-orange-600">
-                          Оставить отзыв
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Оставить отзыв</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4 pt-4">
-                          <p className="text-gray-600">Функционал добавления отзывов в демо-режиме недоступен.</p>
-                          <Button className="w-full">Закрыть</Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <div>
+                      <h2 className="text-2xl font-semibold">Отзывы</h2>
+                      <p className="text-gray-600 mt-1">
+                        Средняя оценка: {formattedRating} из 5
+                      </p>
+                    </div>
+                    <Button 
+                      className="bg-orange-500 hover:bg-orange-600"
+                      onClick={() => setIsReviewModalOpen(true)}
+                    >
+                      Оставить отзыв
+                    </Button>
                   </div>
                   
                   {dealReviews.length > 0 ? (
                     <div className="space-y-6">
                       {dealReviews.map((review) => (
-                        <div key={review.id} className="border rounded-lg p-6 bg-white">
+                        <div key={review.id} className="border rounded-lg p-6 bg-white shadow-sm">
                           <div className="flex items-start gap-4">
                             <div className="w-12 h-12 rounded-full bg-gray-100 flex-shrink-0 overflow-hidden">
                               {review.userAvatar ? (
@@ -333,25 +338,29 @@ const DealDetails = () => {
                               )}
                             </div>
                             <div className="flex-grow">
-                              <p className="font-medium text-lg">{review.userName}</p>
-                              <div className="flex items-center gap-2 mt-1 mb-3">
-                                <div className="flex gap-0.5">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`h-4 w-4 ${
-                                        i < review.rating
-                                          ? "fill-orange-400 text-orange-400"
-                                          : "fill-gray-200 text-gray-200"
-                                      }`}
-                                    />
-                                  ))}
+                              <div className="flex justify-between">
+                                <div>
+                                  <p className="font-medium text-lg">{review.userName}</p>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <div className="flex gap-0.5">
+                                      {[...Array(5)].map((_, i) => (
+                                        <Star
+                                          key={i}
+                                          className={`h-4 w-4 ${
+                                            i < review.rating
+                                              ? "fill-orange-400 text-orange-400"
+                                              : "fill-gray-200 text-gray-200"
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
                                 </div>
                                 <span className="text-sm text-gray-500">
                                   {new Date(review.createdAt).toLocaleDateString('ru-RU')}
                                 </span>
                               </div>
-                              <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                              <p className="text-gray-700 leading-relaxed mt-3">{review.comment}</p>
                             </div>
                           </div>
                         </div>
@@ -365,6 +374,7 @@ const DealDetails = () => {
                   )}
                 </div>
               </TabsContent>
+
               
               <TabsContent value="location" className="py-6">
                 <div className="max-w-3xl space-y-6">
@@ -393,6 +403,18 @@ const DealDetails = () => {
       </main>
       
       <Footer />
+
+      <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Оставить отзыв</DialogTitle>
+          </DialogHeader>
+          <ReviewForm 
+            onSubmit={handleReviewSubmit}
+            onCancel={() => setIsReviewModalOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
