@@ -23,12 +23,14 @@ export function ImageCarousel({
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const goToPrevious = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
+    setImgError(false); // Reset error state when changing image
   };
 
   const goToNext = (e?: React.MouseEvent) => {
@@ -36,10 +38,12 @@ export function ImageCarousel({
     const isLastSlide = currentIndex === images.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
+    setImgError(false); // Reset error state when changing image
   };
 
   const goToSlide = (slideIndex: number) => {
     setCurrentIndex(slideIndex);
+    setImgError(false); // Reset error state when changing image
   };
 
   const openModal = () => {
@@ -50,6 +54,10 @@ export function ImageCarousel({
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleImageError = () => {
+    setImgError(true);
   };
 
   const aspectRatioClass = {
@@ -68,14 +76,21 @@ export function ImageCarousel({
         )}
         onClick={openModal}
       >
-        <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
-          className={cn(
-            "object-cover w-full h-full transition-all duration-300",
-            enableModal ? "cursor-pointer" : ""
-          )}
-        />
+        {imgError ? (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+            <span>Изображение недоступно</span>
+          </div>
+        ) : (
+          <img
+            src={images[currentIndex]}
+            alt={`Slide ${currentIndex + 1}`}
+            className={cn(
+              "object-cover w-full h-full transition-all duration-300",
+              enableModal ? "cursor-pointer" : ""
+            )}
+            onError={handleImageError}
+          />
+        )}
       </div>
 
       {showArrows && images.length > 1 && (
