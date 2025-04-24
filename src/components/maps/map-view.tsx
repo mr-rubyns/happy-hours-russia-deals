@@ -1,9 +1,8 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Deal } from "@/types";
 import { Card } from "@/components/ui/card";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { ZoomIn, ZoomOut } from "lucide-react";
+import { ZoomIn, ZoomOut, Book, Camera, Coffee, Compass, Gift, Heart, Home, Image as ImageIcon, Map as MapIcon, Music, Package, Rocket, Star, Sun, Umbrella, Zap } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -79,7 +78,24 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   useEffect(() => {
     setMapLoaded(true);
   }, []);
-  
+
+  const softColors = [
+    "bg-[#F2FCE2]", // Soft Green
+    "bg-[#FEF7CD]", // Soft Yellow
+    "bg-[#FEC6A1]", // Soft Orange
+    "bg-[#E5DEFF]", // Soft Purple
+    "bg-[#FFDEE2]", // Soft Pink
+    "bg-[#FDE1D3]", // Soft Peach
+    "bg-[#D3E4FD]", // Soft Blue
+    "bg-[#F1F0FB]", // Soft Gray
+  ];
+
+  const icons = [
+    Book, Camera, Coffee, Compass, Gift, Heart, 
+    Home, ImageIcon, MapIcon, Music, Package, Rocket, 
+    Star, Sun, Umbrella, Zap
+  ];
+
   const handleMarkerClick = (deal: Deal) => {
     if (onDealSelect) {
       onDealSelect(deal);
@@ -128,6 +144,8 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
         >
           {deals.map((deal) => {
             const coords = getCoordinatesForDeal(deal);
+            const randomColor = softColors[Math.floor(Math.random() * softColors.length)];
+            const RandomIcon = icons[Math.floor(Math.random() * icons.length)];
             
             return (
               <Marker
@@ -140,15 +158,8 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
               >
                 <Popup className="w-[280px]">
                   <div className="rounded-lg overflow-hidden">
-                    <div className="relative h-[140px] w-full flex items-center justify-center bg-[#FDE1D3]">
-                      <img 
-                        src="/lovable-uploads/06526ad7-00f1-43f6-8bca-129cb41ea734.png" 
-                        alt={deal.title} 
-                        className="max-w-[80%] max-h-[80%] object-contain"
-                      />
-                      <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-semibold py-1 px-2 rounded">
-                        -{deal.discountPercentage}%
-                      </div>
+                    <div className={`relative h-[140px] w-full flex items-center justify-center ${randomColor}`}>
+                      <RandomIcon className="w-12 h-12 text-gray-700" />
                     </div>
                     <div className="p-3">
                       <h3 className="font-medium text-sm line-clamp-2">{deal.title}</h3>
