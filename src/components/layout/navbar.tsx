@@ -1,14 +1,17 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import { UserRound, Search, X, ArrowLeft, ArrowRight, Filter, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mainCategories, categories } from "@/data/mockData";
+import { mainCategories, categories, mockDeals } from "@/data/mockData";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -61,6 +64,10 @@ export function Navbar({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const isHomePage = location.pathname === '/';
+
+  // Use these variables in place of the undefined ones
+  const currentMainCategory = selectedMainCategory || localMainCategory;
+  const currentSubCategory = selectedSubCategory || localSubCategory;
   
   const handleLocalMainCategoryChange = (categoryId: string) => {
     if (onMainCategoryChange) {
@@ -362,7 +369,7 @@ export function Navbar({
                 </Link>
                 <Link to="/map-search">
                   <Button variant="outline" size="sm" className="gap-2">
-                    <Map className="h-4 w-4" />
+                    <MapIcon className="h-4 w-4" />
                     <span>Карта</span>
                   </Button>
                 </Link>
