@@ -28,21 +28,30 @@ import { Badge } from "@/components/ui/badge";
 import { mockDeals } from "@/data/mockData";
 import { MoreHorizontal, Eye, CheckCircle, XCircle, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Deal } from "@/types";
+
+interface ExtendedDeal extends Deal {
+  status: string;
+  merchant?: {
+    name: string;
+  };
+}
 
 const AdminDeals = () => {
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDeal, setSelectedDeal] = useState<any | null>(null);
+  const [selectedDeal, setSelectedDeal] = useState<ExtendedDeal | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [deals, setDeals] = useState(mockDeals.map(deal => ({
     ...deal,
-    status: ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)]
+    status: ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)],
+    merchant: { name: `Продавец ${deal.sellerId.slice(0, 4)}` }
   })));
 
   const filteredDeals = deals.filter(deal => {
     const matchesFilter = filter === "all" || deal.status === filter;
     const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          deal.merchant.name.toLowerCase().includes(searchQuery.toLowerCase());
+                          (deal.merchant?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -111,8 +120,8 @@ const AdminDeals = () => {
               {filteredDeals.map((deal) => (
                 <TableRow key={deal.id}>
                   <TableCell className="font-medium">{deal.title}</TableCell>
-                  <TableCell>{deal.merchant.name}</TableCell>
-                  <TableCell>{deal.discountPercent}%</TableCell>
+                  <TableCell>{deal.merchant?.name || `Продавец ${deal.sellerId.slice(0, 4)}`}</TableCell>
+                  <TableCell>{deal.discountPercentage}%</TableCell>
                   <TableCell>{deal.discountedPrice} ₽</TableCell>
                   <TableCell>{deal.subcategory}</TableCell>
                   <TableCell>{getStatusBadge(deal.status)}</TableCell>
@@ -216,7 +225,7 @@ const AdminDeals = () => {
 
                 <div className="space-y-1">
                   <p className="text-sm text-gray-500">Продавец</p>
-                  <p className="font-medium">{selectedDeal.merchant.name}</p>
+                  <p className="font-medium">{selectedDeal.merchant?.name || `Продавец ${selectedDeal.sellerId.slice(0, 4)}`}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -237,7 +246,7 @@ const AdminDeals = () => {
 
                 <div className="space-y-1">
                   <p className="text-sm text-gray-500">Условия</p>
-                  <p>{selectedDeal.terms || "Нет особых условий"}</p>
+                  <p>{selectedDeal.conditions?.join(", ") || "Нет особых условий"}</p>
                 </div>
 
                 <div className="space-y-1">

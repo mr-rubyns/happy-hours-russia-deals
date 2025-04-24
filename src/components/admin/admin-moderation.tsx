@@ -26,6 +26,15 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, AlertCircle, MessageSquare, Flag, ThumbsUp, ThumbsDown } from "lucide-react";
 import { mockDeals } from "@/data/mockData";
+import { Deal } from "@/types";
+
+interface ExtendedDeal extends Deal {
+  status: string;
+  submittedDate: string;
+  merchant?: {
+    name: string;
+  };
+}
 
 const AdminModeration = () => {
   const [activeTab, setActiveTab] = useState("pending-deals");
@@ -33,10 +42,11 @@ const AdminModeration = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   // Mock data for pending moderation
-  const pendingDeals = mockDeals.slice(0, 5).map(deal => ({
+  const pendingDeals: ExtendedDeal[] = mockDeals.slice(0, 5).map(deal => ({
     ...deal,
     submittedDate: "2025-04-23",
-    status: "pending"
+    status: "pending",
+    merchant: { name: `Продавец ${deal.sellerId.slice(0, 4)}` }
   }));
 
   // Mock data for reported content
@@ -144,9 +154,9 @@ const AdminModeration = () => {
                   {pendingDeals.map((deal) => (
                     <TableRow key={deal.id}>
                       <TableCell className="font-medium">{deal.title}</TableCell>
-                      <TableCell>{deal.merchant.name}</TableCell>
+                      <TableCell>{deal.merchant?.name || `Продавец ${deal.sellerId.slice(0, 4)}`}</TableCell>
                       <TableCell>{deal.subcategory}</TableCell>
-                      <TableCell>{deal.discountPercent}%</TableCell>
+                      <TableCell>{deal.discountPercentage}%</TableCell>
                       <TableCell>{deal.submittedDate}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -407,7 +417,7 @@ const AdminModeration = () => {
                     <div className="col-span-1">
                       <div className="aspect-square bg-gray-200 rounded-md overflow-hidden">
                         <img 
-                          src={selectedItem.images[0]} 
+                          src={selectedItem.images?.[0] || ''} 
                           alt={selectedItem.title} 
                           className="w-full h-full object-cover" 
                         />
@@ -418,7 +428,7 @@ const AdminModeration = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-gray-500">Продавец</p>
-                          <p className="font-medium">{selectedItem.merchant.name}</p>
+                          <p className="font-medium">{selectedItem.merchant?.name || `Продавец ${selectedItem.sellerId?.slice(0, 4) || 'Неизвестно'}`}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Категория</p>

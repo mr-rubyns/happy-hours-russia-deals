@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { 
   LayoutDashboard, 
-  Category, 
+  PackageSearch, 
   DollarSign, 
   FileText, 
   Settings, 
@@ -40,7 +40,7 @@ const AdminPanel = () => {
               Обзор
             </TabsTrigger>
             <TabsTrigger value="categories" className="flex items-center">
-              <Category className="mr-2 h-4 w-4" />
+              <PackageSearch className="mr-2 h-4 w-4" />
               Категории
             </TabsTrigger>
             <TabsTrigger value="deals" className="flex items-center">
