@@ -1,3 +1,4 @@
+
 import { Deal, User, Review, Message, Category, MainCategory, SubCategory } from "@/types";
 
 // Define main categories
@@ -343,9 +344,6 @@ export const mockDeals: Deal[] = [
     return deal;
   })
 ];
-
-// Export the mockDeals as deals for backward compatibility
-export const deals = mockDeals;
 
 // Add mock users
 export const mockUsers: User[] = [
