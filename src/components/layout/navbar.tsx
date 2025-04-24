@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -104,7 +103,7 @@ export function Navbar({
               <div className="flex-1 px-4">
                 <Input
                   type="text"
-                  placeholder="Где"
+                  placeholder="Что"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
