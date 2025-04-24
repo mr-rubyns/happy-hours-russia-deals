@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,7 +9,6 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
 import DealDetails from "./pages/DealDetails";
-import MapSearch from "./pages/MapSearch";
 import UserDashboard from "./pages/UserDashboard";
 import SellerDashboard from "./pages/SellerDashboard";
 
@@ -28,7 +26,6 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/deal/:slug" element={<DealDetails />} />
-          <Route path="/map-search" element={<MapSearch />} />
           <Route path="/profile" element={<UserDashboard />} />
           <Route path="/purchased" element={<UserDashboard />} />
           <Route path="/seller" element={<SellerDashboard />} />

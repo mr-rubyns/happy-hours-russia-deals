@@ -224,11 +224,6 @@ export function Navbar({
                     Кабинет продавца
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/map-search" className="w-full">
-                    Поиск по карте
-                  </Link>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
