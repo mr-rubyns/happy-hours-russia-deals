@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -160,8 +161,7 @@ export function Navbar({
 
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
-            <Link
-              to={`/category/${selectedMainCategory}`}
+            <button
               onClick={() => handleSubCategoryChange("")}
               className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                 !selectedSubCategory
@@ -173,14 +173,13 @@ export function Navbar({
               <span className="text-xs font-medium whitespace-nowrap">
                 Все категории
               </span>
-            </Link>
+            </button>
             
             {filteredCategories.map((category) => {
               const IconComponent = getIconComponent(category.icon);
               return (
-                <Link
+                <button
                   key={category.id}
-                  to={`/category/${category.id}`}
                   onClick={() => handleSubCategoryChange(category.id)}
                   className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
                     selectedSubCategory === category.id
@@ -192,7 +191,7 @@ export function Navbar({
                   <span className="text-xs font-medium whitespace-nowrap">
                     {category.name}
                   </span>
-                </Link>
+                </button>
               );
             })}
           </nav>
