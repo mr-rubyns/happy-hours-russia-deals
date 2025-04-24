@@ -87,7 +87,7 @@ export function Navbar({
   );
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b">
+    <header className="fixed top-0 z-40 w-full bg-white border-b">
       <div className="container px-4 mx-auto">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex-shrink-0">
