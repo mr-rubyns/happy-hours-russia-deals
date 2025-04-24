@@ -378,14 +378,16 @@ export function Navbar({
                     <Filter className="h-4 w-4" />
                     <span>Фильтры</span>
                   </Button>
-                  <DialogContent className="max-w-sm sm:max-w-md">
+                  <DialogContent className="max-w-sm sm:max-w-md h-[80vh] overflow-hidden flex flex-col">
                     <DialogHeader>
                       <DialogTitle>Фильтры</DialogTitle>
                     </DialogHeader>
-                    <FilterSidebar
-                      onFilterChange={handleFilterChange}
-                      className="border-none p-0"
-                    />
+                    <div className="flex-1 overflow-y-auto">
+                      <FilterSidebar
+                        onFilterChange={handleFilterChange}
+                        className="border-none p-0"
+                      />
+                    </div>
                   </DialogContent>
                 </Dialog>
                 <Link to="/map-search">
