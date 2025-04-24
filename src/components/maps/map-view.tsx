@@ -8,7 +8,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "leaflet.markercluster";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 // Fix for default marker icons in Leaflet
