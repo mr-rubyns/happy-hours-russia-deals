@@ -1,25 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { 
-  Search,
-  UserRound,
-  X,
-  Filter,
-  Map,
-  ArrowLeft,
-  ArrowRight
-} from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mainCategories, categories, mockDeals } from "@/data/mockData";
-import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { mainCategories, categories } from "@/data/mockData";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -66,15 +55,13 @@ export function Navbar({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
+  
   const [localMainCategory, setLocalMainCategory] = useState(selectedMainCategory);
   const [localSubCategory, setLocalSubCategory] = useState(selectedSubCategory);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const currentMainCategory = selectedMainCategory || localMainCategory;
-  const currentSubCategory = selectedSubCategory || localSubCategory;
-
+  const isHomePage = location.pathname === '/';
+  
   const handleLocalMainCategoryChange = (categoryId: string) => {
     if (onMainCategoryChange) {
       onMainCategoryChange(categoryId);
@@ -128,8 +115,6 @@ export function Navbar({
     return filtered.slice(0, 3);
   };
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
   const scrollCategories = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
@@ -163,25 +148,27 @@ export function Navbar({
             </span>
           </Link>
 
-          <nav className="hidden md:flex space-x-8">
-            {mainCategories.map((category) => {
-              const IconComponent = getIconComponent(category.icon);
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleLocalMainCategoryChange(category.id)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                    currentMainCategory === category.id
-                      ? "text-orange-600"
-                      : "text-gray-600 hover:text-orange-500"
-                  }`}
-                >
-                  <IconComponent className="h-5 w-5" />
-                  <span>{category.name}</span>
-                </button>
-              );
-            })}
-          </nav>
+          {isHomePage && (
+            <nav className="hidden md:flex space-x-8">
+              {mainCategories.map((category) => {
+                const IconComponent = getIconComponent(category.icon);
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => handleLocalMainCategoryChange(category.id)}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                      (selectedMainCategory || localMainCategory) === category.id
+                        ? "text-orange-600"
+                        : "text-gray-600 hover:text-orange-500"
+                    }`}
+                  >
+                    <IconComponent className="h-5 w-5" />
+                    <span>{category.name}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          )}
 
           <div className="flex items-center">
             <DropdownMenu>
@@ -225,160 +212,164 @@ export function Navbar({
           </div>
         </div>
 
-        <div className="py-4">
-          <div className="relative" ref={searchRef}>
-            <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4 max-w-4xl mx-auto">
-              <div className="flex-1 flex items-center space-x-4 bg-white rounded-full border shadow-sm hover:shadow-md transition-shadow p-2">
-                <div className="flex-1 px-4">
-                  <Input
-                    type="text"
-                    placeholder={getSearchPlaceholder()}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setIsSearchFocused(true)}
-                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-                <Button type="submit" className="rounded-full bg-orange-500 hover:bg-orange-600">
-                  <Search className="h-4 w-4" />
-                </Button>
-              </div>
-            </form>
+        {isHomePage && (
+          <>
+            <div className="py-4">
+              <div className="relative" ref={searchRef}>
+                <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4 max-w-4xl mx-auto">
+                  <div className="flex-1 flex items-center space-x-4 bg-white rounded-full border shadow-sm hover:shadow-md transition-shadow p-2">
+                    <div className="flex-1 px-4">
+                      <Input
+                        type="text"
+                        placeholder={getSearchPlaceholder()}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setIsSearchFocused(true)}
+                        className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      />
+                    </div>
+                    <Button type="submit" className="rounded-full bg-orange-500 hover:bg-orange-600">
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </form>
 
-            {isSearchFocused && (
-              <div className="absolute top-full left-0 right-0 mt-2 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border p-4 z-50">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-gray-700">
-                    {searchQuery ? 'Результаты поиска' : 'Последние просмотренные'}
-                  </h3>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => setIsSearchFocused(false)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  {getFilteredDeals().map((deal) => (
-                    <Link 
-                      key={deal.id} 
-                      to={`/deal/${deal.slug}`}
-                      onClick={() => setIsSearchFocused(false)}
-                    >
-                      <Card className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex gap-4">
-                            <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                              <img 
-                                src={deal.images[0]} 
-                                alt={deal.title}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <h4 className="font-medium mb-1">{deal.title}</h4>
-                              <div className="text-sm text-gray-500">{deal.location.address}</div>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-orange-600 font-semibold">
-                                  {deal.discountedPrice.toLocaleString('ru-RU')} ₽
-                                </span>
-                                <span className="text-sm text-gray-500 line-through">
-                                  {deal.originalPrice.toLocaleString('ru-RU')} ₽
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between pb-4">
-          <div className="flex-1 relative flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-0 z-10"
-              onClick={() => scrollCategories('left')}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-
-            <div 
-              ref={scrollContainerRef}
-              className="overflow-x-auto scrollbar-hide mx-8"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              <div className="flex space-x-6 min-w-max px-4">
-                <button
-                  onClick={() => handleLocalSubCategoryChange("")}
-                  className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
-                    !currentSubCategory
-                      ? "text-orange-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  <div className="h-6 w-6 flex items-center justify-center">🔍</div>
-                  <span className="text-xs font-medium whitespace-nowrap">
-                    Все
-                  </span>
-                </button>
-                
-                {categories
-                  .filter(category => category.mainCategoryId === currentMainCategory)
-                  .map((category) => {
-                    const IconComponent = getIconComponent(category.icon);
-                    return (
-                      <button
-                        key={category.id}
-                        onClick={() => handleLocalSubCategoryChange(category.id)}
-                        className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
-                          currentSubCategory === category.id
-                            ? "text-orange-500"
-                            : "text-gray-500"
-                        }`}
+                {isSearchFocused && (
+                  <div className="absolute top-full left-0 right-0 mt-2 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border p-4 z-50">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-semibold text-gray-700">
+                        {searchQuery ? 'Результаты поиска' : 'Последние просмотренные'}
+                      </h3>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => setIsSearchFocused(false)}
                       >
-                        <IconComponent className="h-6 w-6" />
-                        <span className="text-xs font-medium whitespace-nowrap">
-                          {category.name}
-                        </span>
-                      </button>
-                    );
-                  })}
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="space-y-4">
+                      {getFilteredDeals().map((deal) => (
+                        <Link 
+                          key={deal.id} 
+                          to={`/deal/${deal.slug}`}
+                          onClick={() => setIsSearchFocused(false)}
+                        >
+                          <Card className="hover:shadow-md transition-shadow">
+                            <CardContent className="p-4">
+                              <div className="flex gap-4">
+                                <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                                  <img 
+                                    src={deal.images[0]} 
+                                    alt={deal.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium mb-1">{deal.title}</h4>
+                                  <div className="text-sm text-gray-500">{deal.location.address}</div>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-orange-600 font-semibold">
+                                      {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                                    </span>
+                                    <span className="text-sm text-gray-500 line-through">
+                                      {deal.originalPrice.toLocaleString('ru-RU')} ₽
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-0 z-10"
-              onClick={() => scrollCategories('right')}
-            >
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
+            <div className="flex items-center justify-between pb-4">
+              <div className="flex-1 relative flex items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-0 z-10"
+                  onClick={() => scrollCategories('left')}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
 
-          <div className="flex items-center gap-2 ml-4">
-            <Link to="/filter">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Filter className="h-4 w-4" />
-                <span>Фильтры</span>
-              </Button>
-            </Link>
-            <Link to="/map-search">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Map className="h-4 w-4" />
-                <span>Карта</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
+                <div 
+                  ref={scrollContainerRef}
+                  className="overflow-x-auto scrollbar-hide mx-8"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  <div className="flex space-x-6 min-w-max px-4">
+                    <button
+                      onClick={() => handleLocalSubCategoryChange("")}
+                      className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
+                        !currentSubCategory
+                          ? "text-orange-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <div className="h-6 w-6 flex items-center justify-center">🔍</div>
+                      <span className="text-xs font-medium whitespace-nowrap">
+                        Все
+                      </span>
+                    </button>
+                    
+                    {categories
+                      .filter(category => category.mainCategoryId === currentMainCategory)
+                      .map((category) => {
+                        const IconComponent = getIconComponent(category.icon);
+                        return (
+                          <button
+                            key={category.id}
+                            onClick={() => handleLocalSubCategoryChange(category.id)}
+                            className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
+                              currentSubCategory === category.id
+                                ? "text-orange-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            <IconComponent className="h-6 w-6" />
+                            <span className="text-xs font-medium whitespace-nowrap">
+                              {category.name}
+                            </span>
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 z-10"
+                  onClick={() => scrollCategories('right')}
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-2 ml-4">
+                <Link to="/filter">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Filter className="h-4 w-4" />
+                    <span>Фильтры</span>
+                  </Button>
+                </Link>
+                <Link to="/map-search">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Map className="h-4 w-4" />
+                    <span>Карта</span>
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </header>
   );
