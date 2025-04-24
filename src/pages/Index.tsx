@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
@@ -87,9 +88,12 @@ const Index = () => {
               </h2>
               <div className="flex items-center gap-4">
                 <span className="text-orange-600">
-                  {filteredDeals.length} предложений
+                  {filteredDeals.length}
                 </span>
-                <Button variant="outline" onClick={() => setIsFilterOpen(true)}>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsFilterOpen(true)}
+                >
                   <Filter className="h-4 w-4 mr-2" />
                   Фильтры
                 </Button>
@@ -151,3 +155,4 @@ const Index = () => {
 };
 
 export default Index;
+
