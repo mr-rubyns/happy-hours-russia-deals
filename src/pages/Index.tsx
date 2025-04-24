@@ -8,30 +8,30 @@ import { mockDeals, categories } from '@/data/mockData';
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
-    "Gift": () => <div className="h-5 w-5 flex items-center justify-center">🎁</div>,
-    "Home": () => <div className="h-5 w-5 flex items-center justify-center">🏠</div>,
-    "Star": () => <div className="h-5 w-5 flex items-center justify-center">⭐</div>,
-    "Leaf": () => <div className="h-5 w-5 flex items-center justify-center">🍃</div>,
-    "Palette": () => <div className="h-5 w-5 flex items-center justify-center">🎨</div>,
-    "Utensils": () => <div className="h-5 w-5 flex items-center justify-center">🍽️</div>,
-    "Mountain": () => <div className="h-5 w-5 flex items-center justify-center">⛰️</div>,
-    "Camera": () => <div className="h-5 w-5 flex items-center justify-center">📷</div>,
-    "GraduationCap": () => <div className="h-5 w-5 flex items-center justify-center">🎓</div>,
-    "Wine": () => <div className="h-5 w-5 flex items-center justify-center">🍷</div>,
-    "Heart": () => <div className="h-5 w-5 flex items-center justify-center">❤️</div>,
-    "MapPin": () => <div className="h-5 w-5 flex items-center justify-center">📍</div>,
-    "Ticket": () => <div className="h-5 w-5 flex items-center justify-center">🎟️</div>,
-    "ShoppingBag": () => <div className="h-5 w-5 flex items-center justify-center">🛍️</div>,
-    "Dumbbell": () => <div className="h-5 w-5 flex items-center justify-center">🏋️</div>,
-    "Car": () => <div className="h-5 w-5 flex items-center justify-center">🚗</div>,
-    "Hotel": () => <div className="h-5 w-5 flex items-center justify-center">🏨</div>,
-    "House": () => <div className="h-5 w-5 flex items-center justify-center">🏡</div>,
-    "Bed": () => <div className="h-5 w-5 flex items-center justify-center">🛏️</div>,
-    "Compass": () => <div className="h-5 w-5 flex items-center justify-center">🧭</div>,
-    "Trophy": () => <div className="h-5 w-5 flex items-center justify-center">🏆</div>,
+    "Gift": () => <div className="h-5 w-5 bg-orange-200 rounded-full"></div>,
+    "Home": () => <div className="h-5 w-5 bg-blue-200 rounded-sm"></div>,
+    "Star": () => <div className="h-5 w-5 bg-yellow-200 rotate-45"></div>,
+    "Leaf": () => <div className="h-5 w-5 bg-green-200 border-l-2 border-b-2 border-green-500"></div>,
+    "Palette": () => <div className="h-5 w-5 bg-purple-200 border-2 border-purple-500"></div>,
+    "Utensils": () => <div className="h-5 w-5 bg-red-200 border-l-2 border-t-2 border-red-500"></div>,
+    "Mountain": () => <div className="h-5 w-5 bg-gray-200 triangle-down"></div>,
+    "Camera": () => <div className="h-5 w-5 bg-indigo-200 border-2 border-indigo-500 rounded-sm"></div>,
+    "GraduationCap": () => <div className="h-5 w-5 bg-teal-200 border-b-2 border-r-2 border-teal-500"></div>,
+    "Wine": () => <div className="h-5 w-5 bg-pink-200 border-l-2 border-r-2 border-pink-500"></div>,
+    "Heart": () => <div className="h-5 w-5 bg-red-200 transform rotate-45 border-r-2 border-b-2 border-red-500"></div>,
+    "MapPin": () => <div className="h-5 w-5 bg-orange-200 rounded-full border-b-2 border-orange-500"></div>,
+    "Ticket": () => <div className="h-5 w-5 bg-green-200 border-dashed border-2 border-green-500"></div>,
+    "ShoppingBag": () => <div className="h-5 w-5 bg-blue-200 border-2 border-blue-500 rounded-sm"></div>,
+    "Dumbbell": () => <div className="h-5 w-5 bg-gray-200 border-l-2 border-r-2 border-gray-500"></div>,
+    "Car": () => <div className="h-5 w-5 bg-red-200 border-b-2 border-red-500"></div>,
+    "Hotel": () => <div className="h-5 w-5 bg-indigo-200 border-2 border-indigo-500"></div>,
+    "House": () => <div className="h-5 w-5 bg-green-200 border-2 border-green-500 rounded-sm"></div>,
+    "Bed": () => <div className="h-5 w-5 bg-purple-200 border-b-2 border-purple-500"></div>,
+    "Compass": () => <div className="h-5 w-5 bg-teal-200 rounded-full border-2 border-teal-500"></div>,
+    "Trophy": () => <div className="h-5 w-5 bg-yellow-200 border-b-2 border-yellow-500"></div>,
   };
 
-  return iconMap[iconName] || (() => <div className="h-5 w-5 flex items-center justify-center">📌</div>);
+  return iconMap[iconName] || (() => <div className="h-5 w-5 bg-gray-200 border-2 border-gray-500"></div>);
 };
 
 const Index = () => {
