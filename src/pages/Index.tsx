@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { DealGrid } from '@/components/deals/deal-grid';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { mockDeals, categories } from '@/data/mockData';
 
@@ -89,10 +87,9 @@ const Index = () => {
                   ? `${getSubCategoryName(selectedSubCategory)}` 
                   : "Популярные предложения"}
               </h2>
-              <Link to="/deals" className="text-orange-600 hover:text-orange-700 flex items-center">
-                <span>Смотреть все</span>
-                <ChevronRight className="h-4 w-4" />
-              </Link>
+              <div className="text-orange-600 flex items-center">
+                <span>{filteredDeals.length} предложений</span>
+              </div>
             </div>
             <DealGrid 
               deals={filteredDeals.slice(0, 20)} 
