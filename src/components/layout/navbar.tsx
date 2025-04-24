@@ -1,10 +1,13 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   Search,
   UserRound,
-  X
+  X,
+  Filter,
+  Map,
+  ArrowLeft,
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mainCategories, categories, mockDeals } from "@/data/mockData";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -62,12 +66,12 @@ export function Navbar({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  // Add local state for categories when not provided by props
   const [localMainCategory, setLocalMainCategory] = useState(selectedMainCategory);
   const [localSubCategory, setLocalSubCategory] = useState(selectedSubCategory);
 
-  // Use either prop values or local state
   const currentMainCategory = selectedMainCategory || localMainCategory;
   const currentSubCategory = selectedSubCategory || localSubCategory;
 
@@ -122,6 +126,20 @@ export function Navbar({
     }
     
     return filtered.slice(0, 3);
+  };
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = 200;
+      const targetScroll = container.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+      container.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
@@ -281,44 +299,87 @@ export function Navbar({
           </div>
         </div>
 
-        <div className="overflow-x-auto -mx-4 px-4 pb-4">
-          <nav className="flex space-x-8 min-w-max">
-            <button
-              onClick={() => handleLocalSubCategoryChange("")}
-              className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
-                !currentSubCategory
-                  ? "text-orange-500"
-                  : "text-gray-500"
-              }`}
+        <div className="flex items-center justify-between pb-4">
+          <div className="flex-1 relative flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute left-0 z-10"
+              onClick={() => scrollCategories('left')}
             >
-              <div className="h-6 w-6 flex items-center justify-center">🔍</div>
-              <span className="text-xs font-medium whitespace-nowrap">
-                Все категории
-              </span>
-            </button>
-            
-            {categories.filter(
-              category => category.mainCategoryId === currentMainCategory
-            ).map((category) => {
-              const IconComponent = getIconComponent(category.icon);
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleLocalSubCategoryChange(category.id)}
-                  className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
-                    currentSubCategory === category.id
-                      ? "text-orange-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  <IconComponent className="h-6 w-6" />
-                  <span className="text-xs font-medium whitespace-nowrap">
-                    {category.name}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+
+            <div 
+              ref={scrollContainerRef}
+              className="overflow-x-auto scrollbar-hide mx-8"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <div className="flex space-x-6 min-w-max px-4">
+                {currentSubCategory !== "" && (
+                  <button
+                    onClick={() => handleLocalSubCategoryChange("")}
+                    className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
+                      !currentSubCategory
+                        ? "text-orange-500 border-b-2 border-orange-500"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    <div className="h-6 w-6 flex items-center justify-center">🔍</div>
+                    <span className="text-xs font-medium whitespace-nowrap">
+                      Все
+                    </span>
+                  </button>
+                )}
+                
+                {categories
+                  .filter(category => category.mainCategoryId === currentMainCategory)
+                  .map((category) => {
+                    const IconComponent = getIconComponent(category.icon);
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => handleLocalSubCategoryChange(category.id)}
+                        className={`flex flex-col items-center gap-1.5 py-2 transition-colors hover:text-orange-500 min-w-[64px] ${
+                          currentSubCategory === category.id
+                            ? "text-orange-500 border-b-2 border-orange-500"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <IconComponent className="h-6 w-6" />
+                        <span className="text-xs font-medium whitespace-nowrap">
+                          {category.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 z-10"
+              onClick={() => scrollCategories('right')}
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-2 ml-4">
+            <Link to="/filter">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Filter className="h-4 w-4" />
+                <span>Фильтры</span>
+              </Button>
+            </Link>
+            <Link to="/map-search">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Map className="h-4 w-4" />
+                <span>Карта</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </header>
