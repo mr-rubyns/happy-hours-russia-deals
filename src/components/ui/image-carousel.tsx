@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
@@ -81,7 +81,9 @@ export function ImageCarousel({
     }
   };
 
-  const closeModal = () => {
+  const closeModal = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    e?.preventDefault();
     setIsModalOpen(false);
   };
 
@@ -177,64 +179,66 @@ export function ImageCarousel({
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
           onClick={closeModal}
         >
-          <div className="relative max-w-[90%] max-h-[90%]">
-            <button
-              className="absolute top-2 right-2 bg-white/10 text-white p-2 rounded-full backdrop-blur-sm"
-              onClick={closeModal}
-            >
-              &times;
-            </button>
-            <div className={cn(
-              "w-[80vw] h-[80vh] flex items-center justify-center",
-              placeholders[currentIndex].color
-            )}>
-              <React.Suspense fallback={<div className="w-48 h-48" />}>
-                <IconComponent className="w-48 h-48 text-gray-600" />
-              </React.Suspense>
-            </div>
-            {images.length > 1 && (
-              <>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    goToPrevious();
-                  }}
-                  size="icon"
-                  variant="ghost"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm text-white rounded-full"
-                >
-                  <ChevronLeft className="h-6 w-6" />
-                </Button>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    goToNext();
-                  }}
-                  size="icon"
-                  variant="ghost"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm text-white rounded-full"
-                >
-                  <ChevronRight className="h-6 w-6" />
-                </Button>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex justify-center gap-1">
-                  {images.map((_, slideIndex) => (
-                    <div
-                      key={slideIndex}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goToSlide(slideIndex);
-                      }}
-                      className={`h-1.5 rounded-full cursor-pointer transition-all ${
-                        slideIndex === currentIndex
-                          ? "w-6 bg-white"
-                          : "w-1.5 bg-white/50"
-                      }`}
-                    ></div>
-                  ))}
-                </div>
-              </>
-            )}
+          <button
+            className="absolute top-4 right-4 bg-white/80 text-black p-2 rounded-full backdrop-blur-sm z-50 hover:bg-white"
+            onClick={closeModal}
+            aria-label="Close"
+          >
+            <X className="h-6 w-6" />
+          </button>
+
+          <div className={cn(
+            "w-[80vw] h-[80vh] flex items-center justify-center",
+            placeholders[currentIndex].color
+          )}>
+            <React.Suspense fallback={<div className="w-48 h-48" />}>
+              <IconComponent className="w-48 h-48 text-gray-600" />
+            </React.Suspense>
           </div>
+
+          {images.length > 1 && (
+            <>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrevious(e);
+                }}
+                size="icon"
+                variant="ghost"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 text-black rounded-full"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext(e);
+                }}
+                size="icon"
+                variant="ghost"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 text-black rounded-full"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex justify-center gap-2">
+                {images.map((_, slideIndex) => (
+                  <div
+                    key={slideIndex}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToSlide(slideIndex, e);
+                    }}
+                    className={`h-2.5 rounded-full cursor-pointer transition-all ${
+                      slideIndex === currentIndex
+                        ? "w-8 bg-white"
+                        : "w-2.5 bg-white/50"
+                    }`}
+                  ></div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
