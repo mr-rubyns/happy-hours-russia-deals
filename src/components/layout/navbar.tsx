@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { 
   Search,
   UserRound,
@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { mainCategories, categories, mockDeals } from "@/data/mockData";
 import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -63,22 +62,14 @@ export function Navbar({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { toast } = useToast();
 
-  const storedMainCategory = localStorage.getItem('selectedMainCategory') || "coupons";
-  const storedSubCategory = localStorage.getItem('selectedSubCategory') || "";
+  // Add local state for categories when not provided by props
+  const [localMainCategory, setLocalMainCategory] = useState(selectedMainCategory);
+  const [localSubCategory, setLocalSubCategory] = useState(selectedSubCategory);
 
-  const [localMainCategory, setLocalMainCategory] = useState(selectedMainCategory || storedMainCategory);
-  const [localSubCategory, setLocalSubCategory] = useState(selectedSubCategory || storedSubCategory);
-
+  // Use either prop values or local state
   const currentMainCategory = selectedMainCategory || localMainCategory;
   const currentSubCategory = selectedSubCategory || localSubCategory;
-
-  useEffect(() => {
-    localStorage.setItem('selectedMainCategory', currentMainCategory);
-    localStorage.setItem('selectedSubCategory', currentSubCategory);
-  }, [currentMainCategory, currentSubCategory]);
 
   const handleLocalMainCategoryChange = (categoryId: string) => {
     if (onMainCategoryChange) {
@@ -86,14 +77,6 @@ export function Navbar({
     } else {
       setLocalMainCategory(categoryId);
       setLocalSubCategory("");
-      
-      if (location.pathname !== "/") {
-        navigate("/");
-        toast({
-          title: "Категория изменена",
-          description: `Выбрана категория: ${mainCategories.find(cat => cat.id === categoryId)?.name}`,
-        });
-      }
     }
   };
 
@@ -102,36 +85,12 @@ export function Navbar({
       onSubCategoryChange(categoryId);
     } else {
       setLocalSubCategory(categoryId);
-      
-      if (location.pathname !== "/") {
-        navigate("/");
-        if (categoryId) {
-          const subCategoryName = categories.find(cat => cat.id === categoryId)?.name;
-          toast({
-            title: "Подкатегория изменена",
-            description: `Выбрана подкатегория: ${subCategoryName}`,
-          });
-        } else {
-          toast({
-            title: "Подкатегория изменена",
-            description: "Показаны все категории",
-          });
-        }
-      }
     }
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearchFocused(false);
-    
-    if (searchQuery.trim() && location.pathname !== "/") {
-      navigate("/");
-      toast({
-        title: "Поиск",
-        description: `Результаты поиска для: ${searchQuery}`,
-      });
-    }
   };
 
   const getSearchPlaceholder = () => {
