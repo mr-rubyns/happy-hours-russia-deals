@@ -1,13 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { DealGrid } from '@/components/deals/deal-grid';
 import { Card, CardContent } from '@/components/ui/card';
 import { mockDeals, categories } from '@/data/mockData';
-import { Button } from '@/components/ui/button';
-import { FilterDialog } from '@/components/deals/filter-dialog';
-import { Filter } from 'lucide-react';
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -41,7 +39,6 @@ const Index = () => {
   const [selectedMainCategory, setSelectedMainCategory] = useState("coupons");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [filteredDeals, setFilteredDeals] = useState(mockDeals);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     let filtered = mockDeals.filter(deal => deal.mainCategory === selectedMainCategory);
@@ -75,7 +72,12 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar 
+        onMainCategoryChange={handleMainCategoryChange}
+        onSubCategoryChange={handleSubCategoryChange}
+        selectedMainCategory={selectedMainCategory}
+        selectedSubCategory={selectedSubCategory}
+      />
       
       <main className="flex-grow pt-4">
         <section className="py-8 md:py-12">
@@ -86,17 +88,8 @@ const Index = () => {
                   ? `${getSubCategoryName(selectedSubCategory)}` 
                   : "Популярные предложения"}
               </h2>
-              <div className="flex items-center gap-4">
-                <span className="text-orange-600">
-                  {filteredDeals.length}
-                </span>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsFilterOpen(true)}
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Фильтры
-                </Button>
+              <div className="text-orange-600 flex items-center">
+                <span>{filteredDeals.length} предложений</span>
               </div>
             </div>
             <DealGrid 
@@ -144,15 +137,9 @@ const Index = () => {
         </section>
       </main>
       
-      <FilterDialog 
-        open={isFilterOpen}
-        onOpenChange={setIsFilterOpen}
-      />
-      
       <Footer />
     </div>
   );
 };
 
 export default Index;
-
