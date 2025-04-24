@@ -147,7 +147,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
             const randomColor = softColors[Math.floor(Math.random() * softColors.length)];
             const RandomIcon = icons[Math.floor(Math.random() * icons.length)];
             
-            const formattedRating = deal.rating.toFixed(1);
+            const formattedRating = deal.rating.toFixed(2);
             
             return (
               <Marker
