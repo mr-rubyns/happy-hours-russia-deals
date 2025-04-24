@@ -400,10 +400,7 @@ export function Navbar({
                       <span>Карта</span>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent 
-                    className="max-w-full w-full h-[100vh] p-0 mt-0 relative" 
-                    closeClassName="absolute top-4 left-4 bg-orange-500 text-white rounded-full p-2 hover:bg-orange-600"
-                  >
+                  <DialogContent className="max-w-full w-full h-[100vh] p-0 mt-0 relative">
                     <button 
                       onClick={() => setIsMapOpen(false)} 
                       className="absolute top-4 left-4 bg-orange-500 text-white rounded-full p-2 hover:bg-orange-600 z-50"
