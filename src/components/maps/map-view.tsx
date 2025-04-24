@@ -73,18 +73,23 @@ const getCoordinatesForDeal = (deal: Deal) => {
   const latOffset = ((seed % 100) / 1000) * (seed % 2 ? 1 : -1);
   const lngOffset = ((seed % 100) / 1000) * (Math.floor(seed / 10) % 2 ? 1 : -1);
   
-  return [baseLat + latOffset, baseLng + lngOffset];
+  return [baseLat + latOffset, baseLng + lngOffset] as [number, number];
 };
 
 // Function to group markers into clusters
 const createClusters = (deals: Deal[]) => {
   // For simplicity, we'll create 3 static clusters
   return [
-    { position: [55.73, 37.55], count: 15 },
-    { position: [55.76, 37.68], count: 24 },
-    { position: [55.72, 37.60], count: 38 }
+    { position: [55.73, 37.55] as [number, number], count: 15 },
+    { position: [55.76, 37.68] as [number, number], count: 24 },
+    { position: [55.72, 37.60] as [number, number], count: 38 }
   ];
 };
+
+type LeafletElement = L.Map | L.Marker | L.TileLayer;
+interface LeafletProps {
+  ref?: React.RefObject<LeafletElement>;
+}
 
 export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -114,7 +119,7 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
   return (
     <Card className="w-full h-full overflow-hidden rounded-lg relative border border-gray-200">
       <MapContainer 
-        center={[55.7558, 37.6173]} 
+        center={[55.7558, 37.6173] as [number, number]} 
         zoom={11} 
         style={{ height: "100%", width: "100%" }} 
         zoomControl={false}
@@ -133,8 +138,8 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
           return (
             <Marker
               key={deal.id}
-              position={coords as [number, number]}
-              icon={dealIcon}
+              position={coords}
+              icon={dealIcon as L.Icon}
               eventHandlers={{
                 click: () => handleMarkerClick(deal),
               }}
@@ -169,13 +174,13 @@ export function MapView({ deals, onDealSelect, selectedDealId }: MapViewProps) {
         {clusters.map((cluster, index) => (
           <Marker
             key={`cluster-${index}`}
-            position={cluster.position as [number, number]}
+            position={cluster.position}
             icon={L.divIcon({
               className: 'custom-cluster-icon',
               html: `<div class="bg-orange-500 rounded-full flex items-center justify-center shadow-md border-2 border-white text-white font-bold" style="width: ${Math.min(40 + cluster.count / 2, 60)}px; height: ${Math.min(40 + cluster.count / 2, 60)}px;">${cluster.count}</div>`,
               iconSize: [60, 60],
               iconAnchor: [30, 30]
-            })}
+            }) as L.Icon}
           />
         ))}
       </MapContainer>
