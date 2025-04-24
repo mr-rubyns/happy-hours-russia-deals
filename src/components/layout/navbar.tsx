@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   Search,
   Globe,
-  User
+  User,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { mainCategories, categories } from "@/data/mockData";
+import { mainCategories, categories, mockDeals } from "@/data/mockData";
+import { Card, CardContent } from "@/components/ui/card";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -51,11 +53,56 @@ export function Navbar({
   selectedSubCategory
 }: NavbarProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSearchFocused(false);
   };
+
+  const getSearchPlaceholder = () => {
+    const mainCategory = mainCategories.find(cat => cat.id === selectedMainCategory);
+    const subCategory = categories.find(cat => cat.id === selectedSubCategory);
+    
+    if (subCategory) {
+      return `Поиск по купонам ${subCategory.name.toLowerCase()}`;
+    }
+    
+    return `Поиск по ${mainCategory?.name.toLowerCase() || 'купонам'}`;
+  };
+
+  const getFilteredDeals = () => {
+    let filtered = mockDeals;
+    
+    if (selectedMainCategory) {
+      filtered = filtered.filter(deal => deal.mainCategory === selectedMainCategory);
+    }
+    
+    if (selectedSubCategory) {
+      filtered = filtered.filter(deal => deal.subcategory === selectedSubCategory);
+    }
+    
+    if (searchQuery) {
+      filtered = filtered.filter(deal => 
+        deal.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return filtered.slice(0, 3);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className="w-full bg-white border-b">
@@ -98,22 +145,77 @@ export function Navbar({
         </div>
 
         <div className="py-4">
-          <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4 max-w-4xl mx-auto">
-            <div className="flex-1 flex items-center space-x-4 bg-white rounded-full border shadow-sm hover:shadow-md transition-shadow p-2">
-              <div className="flex-1 px-4">
-                <Input
-                  type="text"
-                  placeholder="Что"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
+          <div className="relative" ref={searchRef}>
+            <form onSubmit={handleSearchSubmit} className="flex items-center space-x-4 max-w-4xl mx-auto">
+              <div className="flex-1 flex items-center space-x-4 bg-white rounded-full border shadow-sm hover:shadow-md transition-shadow p-2">
+                <div className="flex-1 px-4">
+                  <Input
+                    type="text"
+                    placeholder={getSearchPlaceholder()}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                </div>
+                <Button type="submit" className="rounded-full bg-orange-500 hover:bg-orange-600">
+                  <Search className="h-4 w-4" />
+                </Button>
               </div>
-              <Button type="submit" className="rounded-full bg-orange-500 hover:bg-orange-600">
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-          </form>
+            </form>
+
+            {isSearchFocused && (
+              <div className="absolute top-full left-0 right-0 mt-2 max-w-4xl mx-auto bg-white rounded-lg shadow-lg border p-4 z-50">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-semibold text-gray-700">
+                    {searchQuery ? 'Результаты поиска' : 'Последние просмотренные'}
+                  </h3>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setIsSearchFocused(false)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-4">
+                  {getFilteredDeals().map((deal) => (
+                    <Link 
+                      key={deal.id} 
+                      to={`/deal/${deal.slug}`}
+                      onClick={() => setIsSearchFocused(false)}
+                    >
+                      <Card className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex gap-4">
+                            <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+                              <img 
+                                src={deal.images[0]} 
+                                alt={deal.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <h4 className="font-medium mb-1">{deal.title}</h4>
+                              <div className="text-sm text-gray-500">{deal.location.address}</div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-orange-600 font-semibold">
+                                  {deal.discountedPrice.toLocaleString('ru-RU')} ₽
+                                </span>
+                                <span className="text-sm text-gray-500 line-through">
+                                  {deal.originalPrice.toLocaleString('ru-RU')} ₽
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
