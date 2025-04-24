@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -62,17 +63,42 @@ export function Navbar({
   const searchRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
+  // Add local state for categories when not provided by props
+  const [localMainCategory, setLocalMainCategory] = useState(selectedMainCategory);
+  const [localSubCategory, setLocalSubCategory] = useState(selectedSubCategory);
+
+  // Use either prop values or local state
+  const currentMainCategory = selectedMainCategory || localMainCategory;
+  const currentSubCategory = selectedSubCategory || localSubCategory;
+
+  const handleLocalMainCategoryChange = (categoryId: string) => {
+    if (onMainCategoryChange) {
+      onMainCategoryChange(categoryId);
+    } else {
+      setLocalMainCategory(categoryId);
+      setLocalSubCategory("");
+    }
+  };
+
+  const handleLocalSubCategoryChange = (categoryId: string) => {
+    if (onSubCategoryChange) {
+      onSubCategoryChange(categoryId);
+    } else {
+      setLocalSubCategory(categoryId);
+    }
+  };
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearchFocused(false);
   };
 
   const getSearchPlaceholder = () => {
-    const mainCategory = mainCategories.find(cat => cat.id === selectedMainCategory);
-    const subCategory = categories.find(cat => cat.id === selectedSubCategory);
+    const mainCategory = mainCategories.find(cat => cat.id === currentMainCategory);
+    const subCategory = categories.find(cat => cat.id === currentSubCategory);
     
     if (subCategory) {
-      return `Поиск по купонам ${subCategory.name.toLowerCase()}`;
+      return `Поиск по ${mainCategory?.name.toLowerCase()} ${subCategory.name.toLowerCase()}`;
     }
     
     return `Поиск по ${mainCategory?.name.toLowerCase() || 'купонам'}`;
@@ -81,12 +107,12 @@ export function Navbar({
   const getFilteredDeals = () => {
     let filtered = mockDeals;
     
-    if (selectedMainCategory) {
-      filtered = filtered.filter(deal => deal.mainCategory === selectedMainCategory);
+    if (currentMainCategory) {
+      filtered = filtered.filter(deal => deal.mainCategory === currentMainCategory);
     }
     
-    if (selectedSubCategory) {
-      filtered = filtered.filter(deal => deal.subcategory === selectedSubCategory);
+    if (currentSubCategory) {
+      filtered = filtered.filter(deal => deal.subcategory === currentSubCategory);
     }
     
     if (searchQuery) {
@@ -125,9 +151,9 @@ export function Navbar({
               return (
                 <button
                   key={category.id}
-                  onClick={() => onMainCategoryChange && onMainCategoryChange(category.id)}
+                  onClick={() => handleLocalMainCategoryChange(category.id)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                    selectedMainCategory === category.id
+                    currentMainCategory === category.id
                       ? "text-orange-600"
                       : "text-gray-600 hover:text-orange-500"
                   }`}
@@ -258,9 +284,9 @@ export function Navbar({
         <div className="overflow-x-auto -mx-4 px-4 pb-4">
           <nav className="flex space-x-8 min-w-max">
             <button
-              onClick={() => onSubCategoryChange && onSubCategoryChange("")}
+              onClick={() => handleLocalSubCategoryChange("")}
               className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
-                !selectedSubCategory
+                !currentSubCategory
                   ? "text-orange-500"
                   : "text-gray-500"
               }`}
@@ -272,15 +298,15 @@ export function Navbar({
             </button>
             
             {categories.filter(
-              category => category.mainCategoryId === selectedMainCategory
+              category => category.mainCategoryId === currentMainCategory
             ).map((category) => {
               const IconComponent = getIconComponent(category.icon);
               return (
                 <button
                   key={category.id}
-                  onClick={() => onSubCategoryChange && onSubCategoryChange(category.id)}
+                  onClick={() => handleLocalSubCategoryChange(category.id)}
                   className={`flex flex-col items-center gap-2 py-2 transition-colors hover:text-orange-500 ${
-                    selectedSubCategory === category.id
+                    currentSubCategory === category.id
                       ? "text-orange-500"
                       : "text-gray-500"
                   }`}
