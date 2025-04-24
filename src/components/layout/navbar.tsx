@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { mainCategories, categories, mockDeals } from "@/data/mockData";
+import { MapView } from "@/components/maps/map-view";
 
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -140,6 +141,7 @@ export function Navbar({
   };
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -390,12 +392,19 @@ export function Navbar({
                     </div>
                   </DialogContent>
                 </Dialog>
-                <Link to="/map-search">
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <MapIcon className="h-4 w-4" />
-                    <span>Карта</span>
-                  </Button>
-                </Link>
+                <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <MapIcon className="h-4 w-4" />
+                      <span>Карта</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-full w-full h-[100vh] p-0 mt-0">
+                    <div className="h-full">
+                      <MapView deals={mockDeals} />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </>
