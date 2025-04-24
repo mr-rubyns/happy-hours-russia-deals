@@ -1,5 +1,17 @@
 
-import { Deal } from "@/types";
+import { Deal, User, Review, Message } from "@/types";
+
+// Define categories
+export const categories = [
+  { id: "entertainment", name: "Развлечения" },
+  { id: "beauty", name: "Красота и SPA" },
+  { id: "masterclass", name: "Мастер-классы" },
+  { id: "restaurants", name: "Рестораны" },
+  { id: "excursions", name: "Экскурсии" },
+  { id: "photo", name: "Фото и видео" },
+  { id: "education", name: "Обучение" },
+  { id: "tasting", name: "Дегустации" }
+];
 
 const generateDealImages = (id: number) => {
   const images = [
@@ -36,6 +48,7 @@ export const mockDeals: Deal[] = Array.from({ length: 20 }, (_, index) => ({
   description: "Подробное описание акции и условий...",
   shortDescription: "Краткое описание предложения...",
   originalPrice: Math.round((Math.random() * 5000 + 3000) / 100) * 100,
+  discountedPrice: 0, // This will be calculated below
   discountPercentage: [15, 20, 25, 30, 35, 40, 45, 50][index % 8],
   images: generateDealImages(index),
   location: {
@@ -82,3 +95,99 @@ mockDeals.forEach(deal => {
   deal.discountedPrice = Math.round(deal.originalPrice * (1 - deal.discountPercentage / 100));
 });
 
+// Add mock users
+export const mockUsers: User[] = [
+  {
+    id: "u1",
+    email: "test@example.com",
+    firstName: "Алексей",
+    lastName: "Иванов",
+    role: "user",
+    purchasedDeals: ["deal-1", "deal-2", "deal-5"],
+    savedDeals: ["deal-3", "deal-4", "deal-7", "deal-9"],
+    telegramNotifications: true
+  },
+  {
+    id: "u2",
+    email: "seller@example.com",
+    firstName: "Мария",
+    lastName: "Петрова",
+    role: "seller",
+    telegramNotifications: false
+  },
+  {
+    id: "u3",
+    email: "admin@example.com",
+    firstName: "Дмитрий",
+    lastName: "Сидоров",
+    role: "admin",
+    telegramNotifications: true
+  }
+];
+
+// Add mock reviews
+export const mockReviews: Review[] = [
+  {
+    id: "r1",
+    dealId: "deal-1",
+    userId: "u1",
+    userName: "Алексей И.",
+    rating: 4.5,
+    comment: "Отличное предложение! Все понравилось.",
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: "r2",
+    dealId: "deal-2",
+    userId: "u3",
+    userName: "Дмитрий С.",
+    rating: 5,
+    comment: "Превосходный сервис, обязательно приду снова.",
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: "r3",
+    dealId: "deal-1",
+    userId: "u2",
+    userName: "Мария П.",
+    rating: 3.5,
+    comment: "В целом неплохо, но есть моменты, которые можно улучшить.",
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+  }
+];
+
+// Add mock messages
+export const mockMessages: Message[] = [
+  {
+    id: "m1",
+    senderId: "u1",
+    receiverId: "u2",
+    content: "Здравствуйте! Хотел бы уточнить детали акции.",
+    read: true,
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: "m2",
+    senderId: "u2",
+    receiverId: "u1",
+    content: "Добрый день! Конечно, что именно вас интересует?",
+    read: true,
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: "m3",
+    senderId: "u1",
+    receiverId: "u2",
+    content: "Можно ли перенести дату бронирования?",
+    read: false,
+    createdAt: new Date(Date.now() - 0.5 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: "m4",
+    senderId: "u3",
+    receiverId: "u1",
+    content: "Здравствуйте, ваш заказ подтвержден!",
+    read: false,
+    createdAt: new Date(Date.now() - 0.2 * 24 * 60 * 60 * 1000).toISOString()
+  }
+];
